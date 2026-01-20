@@ -2222,10 +2222,10 @@
             }
         }
         
-        async function saveToFirebase() {
+        // Debounced save for frequent updates (like checking topics)
+        function saveToFirebaseDebounced() {
             if (!currentUser || !currentUser.uid) return;
             
-            // Debounce saves
             if (syncTimeout) clearTimeout(syncTimeout);
             
             syncTimeout = setTimeout(async () => {
@@ -2248,6 +2248,26 @@
             }, 500);
         }
         
+        // Immediate save for critical updates (like completing setup)
+        async function saveToFirebaseImmediate() {
+            if (!currentUser || !currentUser.uid) return;
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).update({
+                    progress: currentUser.progress,
+                    stream: currentUser.stream,
+                    optional: currentUser.optional,
+                    examDate: currentUser.examDate,
+                    setupComplete: currentUser.setupComplete,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return true;
+            } catch (error) {
+                console.error("Save error:", error);
+                return false;
+            }
+        }
+        
         // ============ NAVIGATION ============
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -2256,14 +2276,18 @@
         }
         
         async function selectStream(stream) {
+            showLoading();
             currentUser.stream = stream;
-            await saveToFirebase();
+            await saveToFirebaseImmediate();
+            hideLoading();
             showScreen('optional');
         }
         
         async function selectOptional(optional) {
+            showLoading();
             currentUser.optional = optional;
-            await saveToFirebase();
+            await saveToFirebaseImmediate();
+            hideLoading();
             showScreen('exam');
             
             // Set default date
@@ -2279,10 +2303,21 @@
                 setTimeout(() => document.getElementById('examDate').classList.remove('animate-shake'), 500);
                 return;
             }
+            
+            showLoading();
+            
             currentUser.examDate = date;
             currentUser.setupComplete = true;
-            await saveToFirebase();
-            goToDashboard();
+            
+            const saved = await saveToFirebaseImmediate();
+            
+            hideLoading();
+            
+            if (saved) {
+                goToDashboard();
+            } else {
+                alert('Failed to save. Please try again.');
+            }
         }
         
         function goToDashboard() {
@@ -2515,8 +2550,8 @@
                     currentUser.progress[subjectKey][chapterName].filter(i => i !== topicIndex);
             }
             
-            // Save to Firebase
-            await saveToFirebase();
+            // Save to Firebase (debounced for frequent updates)
+            saveToFirebaseDebounced();
             
             // Update modal progress
             const subjects = getSubjectsForUser();
