@@ -2062,14 +2062,13 @@
             
             // Listen for auth state changes
             auth.onAuthStateChanged(async (user) => {
-                hideLoading();
-                
                 if (user) {
                     firebaseUser = user;
                     await loadUserData(user);
                 } else {
                     firebaseUser = null;
                     currentUser = null;
+                    hideLoading();
                     showScreen('auth');
                 }
             });
@@ -2139,11 +2138,22 @@
                     currentUser = userDoc.data();
                     currentUser.uid = user.uid;
                     
+                    // Ensure progress object exists
+                    if (!currentUser.progress) {
+                        currentUser.progress = {};
+                    }
+                    
+                    hideLoading();
+                    
                     if (currentUser.setupComplete) {
                         goToDashboard();
                     } else if (currentUser.stream) {
                         if (currentUser.optional) {
                             showScreen('exam');
+                            // Set default date
+                            const now = new Date();
+                            let year = now.getMonth() >= 2 ? now.getFullYear() + 1 : now.getFullYear();
+                            document.getElementById('examDate').value = `${year}-02-20`;
                         } else {
                             showScreen('optional');
                         }
@@ -2169,15 +2179,16 @@
                     await db.collection('users').doc(user.uid).set(currentUser);
                     currentUser.uid = user.uid;
                     
+                    hideLoading();
                     showScreen('stream');
                     document.getElementById('welcomeName').textContent = user.displayName;
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
+                hideLoading();
                 showAuthError("Failed to load user data. Please try again.");
+                showScreen('auth');
             }
-            
-            hideLoading();
         }
         
         async function logout() {
@@ -2250,7 +2261,7 @@
         
         // Immediate save for critical updates (like completing setup)
         async function saveToFirebaseImmediate() {
-            if (!currentUser || !currentUser.uid) return;
+            if (!currentUser || !currentUser.uid) return false;
             
             try {
                 await db.collection('users').doc(currentUser.uid).update({
@@ -2261,6 +2272,7 @@
                     setupComplete: currentUser.setupComplete,
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 });
+                console.log("Save successful!");
                 return true;
             } catch (error) {
                 console.error("Save error:", error);
