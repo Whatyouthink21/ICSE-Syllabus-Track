@@ -12,14 +12,79 @@
     <style>
         * { font-family: 'Poppins', sans-serif; }
         
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #1e40af;
+            --primary-light: #60a5fa;
+        }
+        
+        .theme-blue { --primary-color: #3b82f6; --primary-dark: #1e40af; --primary-light: #60a5fa; }
+        .theme-red { --primary-color: #ef4444; --primary-dark: #b91c1c; --primary-light: #f87171; }
+        .theme-pink { --primary-color: #ec4899; --primary-dark: #be185d; --primary-light: #f472b6; }
+        .theme-purple { --primary-color: #8b5cf6; --primary-dark: #5b21b6; --primary-light: #a78bfa; }
+        .theme-green { --primary-color: #10b981; --primary-dark: #047857; --primary-light: #34d399; }
+        .theme-orange { --primary-color: #f97316; --primary-dark: #c2410c; --primary-light: #fb923c; }
+        .theme-cyan { --primary-color: #06b6d4; --primary-dark: #0e7490; --primary-light: #22d3ee; }
+        
+        .light-mode {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(255, 255, 255, 0.1);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        body.light-mode {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+            color: var(--text-primary);
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+            color: var(--text-primary);
+        }
+        
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+        
+        .light-mode .glass {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .light-mode .text-slate-400 { color: #64748b; }
+        .light-mode .text-slate-300 { color: #475569; }
+        .light-mode .text-slate-500 { color: #94a3b8; }
+        .light-mode .bg-slate-800\/50 { background: rgba(241, 245, 249, 0.9); }
+        .light-mode .bg-slate-700 { background: #e2e8f0; }
+        .light-mode .border-slate-700 { border-color: #cbd5e1; }
+        .light-mode .border-slate-700\/50 { border-color: rgba(203, 213, 225, 0.5); }
+        .light-mode .hover\:bg-slate-700\/30:hover { background: rgba(226, 232, 240, 0.5); }
+        .light-mode .timer-digit { background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-color) 50%, var(--primary-dark) 100%); }
+        
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(5deg); }
         }
         
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(147, 51, 234, 0.5); }
+            0%, 100% { box-shadow: 0 0 20px rgba(var(--primary-color), 0.5); }
+            50% { box-shadow: 0 0 40px rgba(var(--primary-color), 0.8), 0 0 60px rgba(147, 51, 234, 0.5); }
         }
         
         @keyframes slide-up {
@@ -44,11 +109,6 @@
             100% { opacity: 1; transform: scale(1); }
         }
         
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        
         @keyframes confetti {
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
@@ -58,11 +118,6 @@
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
-        }
-        
-        @keyframes ripple {
-            0% { transform: scale(0); opacity: 1; }
-            100% { transform: scale(4); opacity: 0; }
         }
         
         @keyframes shake {
@@ -76,6 +131,11 @@
             to { transform: rotate(360deg); }
         }
         
+        @keyframes modal-in {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
         .animate-float { animation: float 3s ease-in-out infinite; }
         .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
         .animate-slide-up { animation: slide-up 0.6s ease-out forwards; }
@@ -84,17 +144,7 @@
         .animate-bounce-in { animation: bounce-in 0.8s ease-out forwards; }
         .animate-shake { animation: shake 0.5s ease-in-out; }
         .animate-spin-slow { animation: spin-slow 20s linear infinite; }
-        .animate-gradient { 
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
-            background-size: 300% 100%;
-            animation: gradient-shift 3s ease infinite;
-        }
-        
-        .shimmer {
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite;
-        }
+        .animate-modal { animation: modal-in 0.3s ease-out forwards; }
         
         .card-hover {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -143,12 +193,6 @@
             transition: stroke-dashoffset 0.5s ease;
         }
         
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
         .page { display: none; }
         .page.active { display: block; }
         
@@ -165,7 +209,6 @@
         }
         .chapter-item:hover {
             transform: translateX(10px);
-            background: rgba(59, 130, 246, 0.1);
         }
         
         .subject-accordion {
@@ -178,7 +221,7 @@
         }
         
         .timer-digit {
-            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #1e3a8a 100%);
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-color) 50%, var(--primary-dark) 100%);
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
@@ -193,15 +236,15 @@
             position: absolute;
             width: 8px;
             height: 8px;
-            background: #3b82f6;
+            background: var(--primary-color);
             border-radius: 50%;
-            box-shadow: 0 0 10px #3b82f6;
+            box-shadow: 0 0 10px var(--primary-color);
         }
         
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
         
         .loading-dots span {
             animation: bounce-in 1.4s infinite ease-in-out both;
@@ -209,12 +252,27 @@
         .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
         .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
         .loading-dots span:nth-child(3) { animation-delay: 0s; }
+        
+        .color-option {
+            transition: all 0.3s ease;
+        }
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+        .color-option.active {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 3px white, 0 0 0 5px currentColor;
+        }
+        
+        .modal-overlay {
+            backdrop-filter: blur(5px);
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white overflow-x-hidden">
+<body class="dark-mode theme-blue min-h-screen overflow-x-hidden">
     
     <!-- Floating Background Elements -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div id="bgElements" class="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-float"></div>
         <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-float" style="animation-delay: 1s;"></div>
         <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
@@ -234,13 +292,99 @@
                 <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/CISCE_logo.png/150px-CISCE_logo.png" 
                      alt="ICSE Logo" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-white p-2">
             </div>
-            <h2 class="text-2xl font-bold" style="background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6, #60a5fa); background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradient-shift 3s ease infinite;">
+            <h2 class="text-2xl font-bold text-white" style="background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6, #60a5fa); background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradient-shift 3s ease infinite;">
                 ICSE Planner
             </h2>
             <div class="loading-dots flex justify-center gap-1 mt-4">
                 <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
                 <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
                 <span class="w-3 h-3 bg-pink-500 rounded-full"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0 bg-black/50" onclick="closeSettings()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg p-4">
+            <div class="glass rounded-3xl p-6 animate-modal">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold flex items-center gap-3">
+                        <span class="text-3xl">⚙️</span> Settings
+                    </h2>
+                    <button onclick="closeSettings()" class="p-2 hover:bg-white/10 rounded-xl transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Theme Toggle -->
+                <div class="mb-8">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <span>🌓</span> Theme Mode
+                    </h3>
+                    <div class="flex gap-4">
+                        <button onclick="setThemeMode('dark')" id="darkModeBtn" class="flex-1 p-4 rounded-2xl border-2 border-slate-700 hover:border-purple-500 transition-all flex items-center justify-center gap-3">
+                            <span class="text-2xl">🌙</span>
+                            <span class="font-medium">Dark</span>
+                        </button>
+                        <button onclick="setThemeMode('light')" id="lightModeBtn" class="flex-1 p-4 rounded-2xl border-2 border-slate-700 hover:border-yellow-500 transition-all flex items-center justify-center gap-3">
+                            <span class="text-2xl">☀️</span>
+                            <span class="font-medium">Light</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Color Selection -->
+                <div class="mb-8">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <span>🎨</span> Accent Color
+                    </h3>
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <button onclick="setThemeColor('blue')" class="color-option w-12 h-12 rounded-full bg-blue-500 hover:ring-4 ring-blue-500/30" data-color="blue"></button>
+                        <button onclick="setThemeColor('red')" class="color-option w-12 h-12 rounded-full bg-red-500 hover:ring-4 ring-red-500/30" data-color="red"></button>
+                        <button onclick="setThemeColor('pink')" class="color-option w-12 h-12 rounded-full bg-pink-500 hover:ring-4 ring-pink-500/30" data-color="pink"></button>
+                        <button onclick="setThemeColor('purple')" class="color-option w-12 h-12 rounded-full bg-purple-500 hover:ring-4 ring-purple-500/30" data-color="purple"></button>
+                        <button onclick="setThemeColor('green')" class="color-option w-12 h-12 rounded-full bg-green-500 hover:ring-4 ring-green-500/30" data-color="green"></button>
+                        <button onclick="setThemeColor('orange')" class="color-option w-12 h-12 rounded-full bg-orange-500 hover:ring-4 ring-orange-500/30" data-color="orange"></button>
+                        <button onclick="setThemeColor('cyan')" class="color-option w-12 h-12 rounded-full bg-cyan-500 hover:ring-4 ring-cyan-500/30" data-color="cyan"></button>
+                    </div>
+                </div>
+                
+                <!-- Exam Date Change -->
+                <div class="mb-8">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <span>📅</span> Change Exam Date
+                    </h3>
+                    <div class="flex gap-3">
+                        <input type="date" id="newExamDate" class="flex-1 px-4 py-3 bg-slate-800/50 rounded-xl border border-slate-700 focus:border-blue-500 transition-all">
+                        <button onclick="updateExamDate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium transition-all">
+                            Update
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Reset Progress -->
+                <div class="mb-6">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <span>🔄</span> Reset Options
+                    </h3>
+                    <div class="flex gap-3">
+                        <button onclick="resetProgress()" class="flex-1 p-3 bg-yellow-600/20 text-yellow-400 border border-yellow-600/50 rounded-xl hover:bg-yellow-600/30 transition-all">
+                            Reset Progress
+                        </button>
+                        <button onclick="resetAll()" class="flex-1 p-3 bg-red-600/20 text-red-400 border border-red-600/50 rounded-xl hover:bg-red-600/30 transition-all">
+                            Reset Everything
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- App Info -->
+                <div class="text-center pt-4 border-t border-slate-700/50">
+                    <p class="text-slate-500 text-sm">ICSE Planner v1.0</p>
+                    <p class="text-slate-600 text-xs mt-1">Made with ❤️ for ICSE Students</p>
+                </div>
             </div>
         </div>
     </div>
@@ -268,7 +412,7 @@
                     <!-- Auth Card -->
                     <div class="glass rounded-3xl p-8 animate-slide-up shadow-2xl">
                         <div class="text-center mb-6">
-                            <h2 class="text-2xl font-bold text-white mb-2">Welcome! 👋</h2>
+                            <h2 class="text-2xl font-bold mb-2">Welcome! 👋</h2>
                             <p class="text-slate-400">Sign in to track your ICSE journey</p>
                         </div>
                         
@@ -308,13 +452,12 @@
                                     <span class="text-green-400">✓</span> Progress sync
                                 </div>
                                 <div class="flex items-center gap-2 text-sm text-slate-400">
-                                    <span class="text-green-400">✓</span> Chapter tracking
+                                    <span class="text-green-400">✓</span> Custom themes
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Footer Note -->
                     <p class="text-center text-slate-500 text-xs mt-6 animate-slide-up" style="animation-delay: 0.3s;">
                         By signing in, you agree to track your studies like a pro! 🚀
                     </p>
@@ -328,7 +471,7 @@
                 <div class="w-full max-w-2xl">
                     <div class="text-center mb-8 animate-bounce-in">
                         <div class="text-6xl mb-4">🎓</div>
-                        <h1 class="text-4xl font-bold text-white mb-2">Welcome, <span id="setupUserName" class="text-blue-400"></span>!</h1>
+                        <h1 class="text-4xl font-bold mb-2">Welcome, <span id="setupUserName" class="text-blue-400"></span>!</h1>
                         <p class="text-slate-400 text-lg">Let's set up your ICSE study plan</p>
                     </div>
                     
@@ -440,7 +583,13 @@
                              alt="ICSE" class="w-10 h-10 rounded-full bg-white p-1">
                         <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">ICSE Planner</h1>
                     </div>
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <button onclick="openSettings()" class="p-2 hover:bg-white/10 rounded-xl transition-all" title="Settings">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        </button>
                         <div class="flex items-center gap-3">
                             <img id="userPhoto" src="" alt="" class="w-10 h-10 rounded-full border-2 border-blue-500 hidden">
                             <span id="userName" class="text-slate-300 hidden md:block font-medium"></span>
@@ -463,19 +612,19 @@
                         </h2>
                         <div id="examTimer" class="flex justify-center gap-4 md:gap-6 flex-wrap">
                             <div class="text-center">
-                                <div id="timerDays" class="timer-digit text-4xl md:text-6xl font-bold px-4 md:px-6 py-4 rounded-2xl min-w-[80px] md:min-w-[120px]">00</div>
+                                <div id="timerDays" class="timer-digit text-4xl md:text-6xl font-bold px-4 md:px-6 py-4 rounded-2xl min-w-[80px] md:min-w-[120px] text-white">00</div>
                                 <p class="text-sm text-slate-400 mt-3 font-medium">Days</p>
                             </div>
                             <div class="text-center">
-                                <div id="timerHours" class="timer-digit text-4xl md:text-6xl font-bold px-4 md:px-6 py-4 rounded-2xl min-w-[80px] md:min-w-[120px]">00</div>
+                                <div id="timerHours" class="timer-digit text-4xl md:text-6xl font-bold px-4 md:px-6 py-4 rounded-2xl min-w-[80px] md:min-w-[120px] text-white">00</div>
                                 <p class="text-sm text-slate-400 mt-3 font-medium">Hours</p>
                             </div>
                             <div class="text-center">
-                                <div id="timerMinutes" class="timer-digit text-4xl md:text-6xl font-bold px-4 md:px-6 py-4 rounded-2xl min-w-[80px] md:min-w-[120px]">00</div>
+                                <div id="timerMinutes" class="timer-digit text-4xl md:text-6xl font-bold px-4 md:px-6 py-4 rounded-2xl min-w-[80px] md:min-w-[120px] text-white">00</div>
                                 <p class="text-sm text-slate-400 mt-3 font-medium">Minutes</p>
                             </div>
                             <div class="text-center">
-                                <div id="timerSeconds" class="timer-digit text-4xl md:text-6xl font-bold px-4 md:px-6 py-4 rounded-2xl min-w-[80px] md:min-w-[120px]">00</div>
+                                <div id="timerSeconds" class="timer-digit text-4xl md:text-6xl font-bold px-4 md:px-6 py-4 rounded-2xl min-w-[80px] md:min-w-[120px] text-white">00</div>
                                 <p class="text-sm text-slate-400 mt-3 font-medium">Seconds</p>
                             </div>
                         </div>
@@ -578,83 +727,84 @@
         const db = firebase.firestore();
         const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-        // Complete Syllabus Data
+        // Complete Syllabus Data - Only Chapter Names (No Subtopics)
         const syllabusData = {
             common: {
                 "English Language": {
                     icon: "📝",
                     color: "blue",
                     chapters: [
-                        "Composition - Essay Writing",
-                        "Composition - Letter Writing (Formal)",
-                        "Composition - Letter Writing (Informal)",
-                        "Composition - Notice Writing",
-                        "Composition - Email Writing",
-                        "Composition - Report Writing",
-                        "Composition - Argumentative Essay",
-                        "Comprehension - Prose Passage",
-                        "Comprehension - Poetry",
-                        "Grammar - Tenses (Present, Past, Future)",
-                        "Grammar - Prepositions",
-                        "Grammar - Conjunctions",
-                        "Grammar - Modals (can, could, may, might, must, etc.)",
-                        "Grammar - Subject-Verb Agreement",
-                        "Grammar - Active & Passive Voice",
-                        "Grammar - Direct & Indirect Speech",
-                        "Grammar - Transformation of Sentences",
-                        "Grammar - Question Tags",
-                        "Grammar - Phrasal Verbs",
-                        "Grammar - Idioms and Phrases"
+                        "Essay Writing",
+                        "Letter Writing (Formal & Informal)",
+                        "Notice Writing",
+                        "Email Writing",
+                        "Comprehension Passage",
+                        "Tenses",
+                        "Prepositions",
+                        "Conjunctions",
+                        "Modals",
+                        "Subject-Verb Agreement",
+                        "Active & Passive Voice",
+                        "Direct & Indirect Speech",
+                        "Transformation of Sentences",
+                        "Question Tags",
+                        "Phrasal Verbs & Idioms"
                     ]
                 },
                 "English Literature": {
                     icon: "📖",
                     color: "indigo",
                     chapters: [
-                        "DRAMA: Julius Caesar - Act III Scene 1 (The Assassination)",
-                        "DRAMA: Julius Caesar - Act III Scene 2 (Brutus & Antony's Speeches)",
-                        "DRAMA: Julius Caesar - Act III Scene 3 (Cinna the Poet)",
-                        "DRAMA: Julius Caesar - Act IV Scene 1 (The Triumvirate)",
-                        "DRAMA: Julius Caesar - Act IV Scene 2 (Brutus and Cassius Meet)",
-                        "DRAMA: Julius Caesar - Act IV Scene 3 (The Quarrel Scene)",
-                        "DRAMA: Julius Caesar - Act V Scene 1 (Before the Battle)",
-                        "DRAMA: Julius Caesar - Act V Scene 2 (The Battle Begins)",
-                        "DRAMA: Julius Caesar - Act V Scene 3 (Cassius's Death)",
-                        "DRAMA: Julius Caesar - Act V Scene 4 (Young Cato's Death)",
-                        "DRAMA: Julius Caesar - Act V Scene 5 (Brutus's Death)",
-                        "TREASURE CHEST - PROSE: With the Photographer – Stephen Leacock",
-                        "TREASURE CHEST - PROSE: The Elevator – William Sleator",
-                        "TREASURE CHEST - PROSE: The Girl Who Can – Ama Ata Aidoo",
-                        "TREASURE CHEST - PROSE: The Pedestrian – Ray Bradbury",
-                        "TREASURE CHEST - PROSE: The Last Lesson – Alphonse Daudet",
-                        "TREASURE CHEST - POETRY: Haunted Houses – H.W. Longfellow",
-                        "TREASURE CHEST - POETRY: The Glove and the Lions – Leigh Hunt",
-                        "TREASURE CHEST - POETRY: When Great Trees Fall – Maya Angelou",
-                        "TREASURE CHEST - POETRY: A Considerable Speck – Robert Frost",
-                        "TREASURE CHEST - POETRY: The Power of Music – Sukumar Ray"
+                        "Julius Caesar - Act III",
+                        "Julius Caesar - Act IV",
+                        "Julius Caesar - Act V",
+                        "With the Photographer – Stephen Leacock",
+                        "The Elevator – William Sleator",
+                        "The Girl Who Can – Ama Ata Aidoo",
+                        "The Pedestrian – Ray Bradbury",
+                        "The Last Lesson – Alphonse Daudet",
+                        "Haunted Houses – H.W. Longfellow",
+                        "The Glove and the Lions – Leigh Hunt",
+                        "When Great Trees Fall – Maya Angelou",
+                        "A Considerable Speck – Robert Frost",
+                        "The Power of Music – Sukumar Ray"
                     ]
                 },
                 "Hindi": {
                     icon: "🔤",
                     color: "orange",
                     chapters: [
-                        "गद्य - बड़े भाई साहब (प्रेमचंद)",
-                        "गद्य - नेताजी का चश्मा (स्वयं प्रकाश)",
-                        "गद्य - बालगोबिन भगत (रामवृक्ष बेनीपुरी)",
-                        "गद्य - लखनवी अंदाज़ (यशपाल)",
-                        "गद्य - मानवीय करुणा की दिव्य चमक",
-                        "काव्य - साखी (कबीर)",
-                        "काव्य - पर्वत प्रदेश में पावस (सुमित्रानंदन पंत)",
-                        "काव्य - मधुर मधुर मेरे दीपक जल (महादेवी वर्मा)",
-                        "काव्य - एक फूल की चाह (सियारामशरण गुप्त)",
-                        "काव्य - राम-लक्ष्मण-परशुराम संवाद (तुलसीदास)",
-                        "काव्य - यह दंतुरित मुसकान (नागार्जुन)",
-                        "काव्य - फसल (नागार्जुन)",
-                        "व्याकरण - संधि (स्वर संधि, व्यंजन संधि, विसर्ग संधि)",
+                        "गद्य - बात अठन्नी की",
+                        "गद्य - काकी",
+                        "गद्य - महायज्ञ का पुरस्कार",
+                        "गद्य - नेताजी का चश्मा",
+                        "गद्य - अपना-अपना भाग्य",
+                        "गद्य - बड़े घर की बेटी",
+                        "गद्य - संदेह",
+                        "गद्य - भीड़ में खोया आदमी",
+                        "गद्य - भेड़ें और भेड़िये",
+                        "गद्य - दो कलाकार",
+                        "पद्य - साखी",
+                        "पद्य - कुंडलियाँ",
+                        "पद्य - स्वर्ग बना सकते हैं",
+                        "पद्य - वह मातृभूमि मेरी",
+                        "पद्य - मेघ आए",
+                        "पद्य - सूर के पद",
+                        "पद्य - विनय के पद",
+                        "पद्य - भिक्षुक",
+                        "पद्य - चलना हमारा काम है",
+                        "पद्य - मातृ मंदिर की ओर",
+                        "एकांकी - संस्कार और भावना",
+                        "एकांकी - बहू की विदा",
+                        "एकांकी - मातृभूमि का मान",
+                        "एकांकी - सूखी डाली",
+                        "एकांकी - महाभारत की एक साँझ",
+                        "एकांकी - दीपदान",
+                        "व्याकरण - संधि",
                         "व्याकरण - समास",
                         "व्याकरण - मुहावरे और लोकोक्तियाँ",
                         "व्याकरण - अपठित गद्यांश",
-                        "व्याकरण - पत्र लेखन (औपचारिक व अनौपचारिक)",
+                        "व्याकरण - पत्र लेखन",
                         "व्याकरण - निबंध लेखन"
                     ]
                 },
@@ -662,64 +812,37 @@
                     icon: "🏛️",
                     color: "amber",
                     chapters: [
-                        "HISTORY: The First War of Independence 1857 - Causes",
-                        "HISTORY: The First War of Independence 1857 - Events & Consequences",
-                        "HISTORY: Growth of Nationalism - Factors",
-                        "HISTORY: First Phase of Indian National Movement (1885-1907) - Early Nationalists",
-                        "HISTORY: Second Phase of Indian National Movement (1905-1916) - Swadeshi Movement",
-                        "HISTORY: Second Phase - Home Rule Movement",
-                        "HISTORY: Mahatma Gandhi and the National Movement - Non-Cooperation (1920-22)",
-                        "HISTORY: Mahatma Gandhi - Civil Disobedience Movement (1930-34)",
-                        "HISTORY: The Freedom Movement (1935-1947) - Quit India Movement",
-                        "HISTORY: The Freedom Movement - Independence and Partition",
-                        "HISTORY: The First World War - Causes, Events & Results",
-                        "HISTORY: Rise of Dictatorships - Fascism in Italy",
-                        "HISTORY: Rise of Dictatorships - Nazism in Germany",
-                        "HISTORY: The Second World War - Causes, Events & Results",
-                        "HISTORY: United Nations Organization - Formation & Objectives",
-                        "HISTORY: United Nations - Principal Organs",
-                        "HISTORY: Major Challenges - Human Rights",
-                        "HISTORY: Major Challenges - Terrorism & Environment",
-                        "CIVICS: The Union Legislature - Lok Sabha",
-                        "CIVICS: The Union Legislature - Rajya Sabha",
-                        "CIVICS: The Union Legislature - Powers & Functions",
-                        "CIVICS: The Union Executive - President (Election & Powers)",
-                        "CIVICS: The Union Executive - Vice President",
-                        "CIVICS: The Prime Minister and Council of Ministers",
-                        "CIVICS: The Judiciary - Supreme Court",
-                        "CIVICS: The Judiciary - High Courts",
-                        "CIVICS: The State Legislature and Executive"
+                        "The First War of Independence 1857",
+                        "Growth of Nationalism",
+                        "First Phase of Indian National Movement (1885-1907)",
+                        "Second Phase of Indian National Movement (1905-1916)",
+                        "Mahatma Gandhi and the National Movement",
+                        "The Freedom Movement (1935-1947)",
+                        "The First World War",
+                        "Rise of Dictatorships",
+                        "The Second World War",
+                        "United Nations Organization",
+                        "Major Challenges Facing the World Today",
+                        "The Union Legislature",
+                        "The Union Executive",
+                        "The Judiciary"
                     ]
                 },
                 "Geography": {
                     icon: "🌍",
                     color: "green",
                     chapters: [
-                        "Map Work - Identification and Marking",
+                        "Map Work",
                         "Location, Extent and Physical Features of India",
-                        "Climate of India - Factors Affecting",
-                        "Climate of India - Seasons (Southwest & Northeast Monsoon)",
-                        "Soil Resources of India - Types and Distribution",
-                        "Soil Resources - Conservation",
-                        "Natural Vegetation of India - Types (Tropical, Deciduous, etc.)",
-                        "Natural Vegetation - Conservation of Forests",
-                        "Water Resources of India - Rivers (Himalayan & Peninsular)",
-                        "Water Resources - Irrigation & Multi-purpose Projects",
-                        "Mineral and Energy Resources - Iron Ore, Manganese, Coal",
-                        "Mineral and Energy Resources - Petroleum, Natural Gas",
-                        "Mineral Resources - Conventional & Non-Conventional Energy",
-                        "Agriculture in India - Rice & Wheat",
-                        "Agriculture in India - Millets & Pulses",
-                        "Agriculture in India - Tea & Coffee",
-                        "Agriculture in India - Sugarcane & Cotton",
-                        "Industries in India - Cotton Textile Industry",
-                        "Industries in India - Iron and Steel Industry",
-                        "Industries in India - IT & Electronics Industry",
-                        "Transport in India - Railways",
-                        "Transport in India - Roadways & Airways",
-                        "Transport in India - Waterways & Pipelines",
-                        "Waste Management - Types of Waste",
-                        "Waste Management - Methods of Disposal"
+                        "Climate of India",
+                        "Soil Resources",
+                        "Natural Vegetation",
+                        "Water Resources",
+                        "Mineral and Energy Resources",
+                        "Agriculture in India",
+                        "Industries in India",
+                        "Transport in India",
+                        "Waste Management"
                     ]
                 }
             },
@@ -728,161 +851,81 @@
                     icon: "⚛️",
                     color: "cyan",
                     chapters: [
-                        "Force - Types and Effects",
-                        "Work - Definition and Formula",
-                        "Power - Definition and Units",
-                        "Energy - Kinetic and Potential",
-                        "Simple Machines - Levers (Classes I, II, III)",
-                        "Simple Machines - Pulleys",
-                        "Simple Machines - Inclined Plane",
-                        "Calorimetry - Specific Heat Capacity",
-                        "Calorimetry - Latent Heat",
-                        "Calorimetry - Numerical Problems",
-                        "Refraction of Light - Laws of Refraction",
-                        "Refraction - Refractive Index",
-                        "Refraction - Critical Angle & Total Internal Reflection",
-                        "Refraction through Lens - Convex Lens",
-                        "Refraction through Lens - Concave Lens",
-                        "Refraction through Lens - Power of a Lens",
-                        "Spectrum - Dispersion of Light",
-                        "Spectrum - Electromagnetic Spectrum",
-                        "Sound - Wave Motion",
-                        "Sound - Characteristics (Pitch, Loudness, Quality)",
-                        "Sound - Reflection of Sound & Echo",
-                        "Current Electricity - Ohm's Law",
-                        "Current Electricity - Resistance & Resistivity",
-                        "Current Electricity - Series & Parallel Circuits",
-                        "Electrical Power and Household Circuits - Calculations",
-                        "Electrical Power - Safety Devices (Fuse, MCB, Earthing)",
-                        "Electromagnetism - Magnetic Effect of Current",
-                        "Electromagnetism - Electromagnetic Induction",
-                        "Electromagnetism - Transformers & Motors",
-                        "Radioactivity - Alpha, Beta, Gamma Rays",
-                        "Nuclear Energy - Fission and Fusion"
+                        "Force, Work, Power and Energy",
+                        "Simple Machines",
+                        "Calorimetry",
+                        "Refraction of Light at Plane Surfaces",
+                        "Refraction through a Lens",
+                        "Spectrum",
+                        "Sound",
+                        "Current Electricity",
+                        "Electrical Power and Household Circuits",
+                        "Electromagnetism",
+                        "Radioactivity and Nuclear Energy"
                     ]
                 },
                 "Chemistry": {
                     icon: "🧪",
                     color: "purple",
                     chapters: [
-                        "Periodic Table - Modern Periodic Law",
-                        "Periodic Table - Periods and Groups",
-                        "Periodicity of Properties - Atomic Size, Ionization Energy",
-                        "Periodicity - Electronegativity, Metallic Character",
-                        "Chemical Bonding - Electrovalent Bond",
-                        "Chemical Bonding - Covalent Bond",
-                        "Chemical Bonding - Coordinate Bond",
-                        "Study of Acids - Properties and Uses",
-                        "Study of Bases - Properties and Uses",
-                        "Study of Salts - Types and Preparation",
-                        "Analytical Chemistry - Identification of Cations",
-                        "Analytical Chemistry - Identification of Anions",
-                        "Analytical Chemistry - Identification of Gases",
-                        "Mole Concept - Atomic and Molecular Mass",
-                        "Mole Concept - Avogadro's Number",
-                        "Stoichiometry - Numerical Problems",
-                        "Electrolysis - Electrolytes and Non-Electrolytes",
-                        "Electrolysis - Applications (Electroplating, Extraction)",
-                        "Metallurgy - Extraction of Aluminium",
-                        "Metallurgy - Extraction of Iron",
-                        "Metallurgy - Alloys",
-                        "Study of Compounds - Hydrogen Chloride (Preparation & Properties)",
-                        "Study of Compounds - Ammonia (Preparation & Properties)",
-                        "Study of Compounds - Nitric Acid (Preparation & Properties)",
-                        "Study of Compounds - Sulphuric Acid (Preparation & Properties)",
-                        "Organic Chemistry - Introduction to Hydrocarbons",
-                        "Organic Chemistry - Alkanes (Methane, Ethane)",
-                        "Organic Chemistry - Alkenes (Ethene)",
-                        "Organic Chemistry - Alkynes (Ethyne)",
-                        "Organic Chemistry - Alcohols (Ethanol)",
-                        "Organic Chemistry - Carboxylic Acids (Ethanoic Acid)",
-                        "Practical Chemistry - Lab Procedures"
+                        "Periodic Table and Periodicity of Properties",
+                        "Chemical Bonding",
+                        "Study of Acids, Bases and Salts",
+                        "Analytical Chemistry",
+                        "Mole Concept and Stoichiometry",
+                        "Electrolysis",
+                        "Metallurgy",
+                        "Study of Compounds - Hydrogen Chloride",
+                        "Study of Compounds - Ammonia",
+                        "Study of Compounds - Nitric Acid",
+                        "Study of Compounds - Sulphuric Acid",
+                        "Organic Chemistry"
                     ]
                 },
                 "Biology": {
                     icon: "🧬",
                     color: "emerald",
                     chapters: [
-                        "Cell Division - Cell Cycle",
-                        "Cell Division - Mitosis (Stages and Significance)",
-                        "Cell Division - Meiosis (Stages and Significance)",
-                        "Genetics - Mendel's Laws of Inheritance",
-                        "Genetics - Monohybrid Cross",
-                        "Genetics - Dihybrid Cross",
-                        "Genetics - Sex Determination & Sex-Linked Inheritance",
-                        "Human Evolution - Evidences of Evolution",
-                        "Human Evolution - Stages of Human Evolution",
-                        "Absorption by Roots - Structure of Root Hair",
-                        "Absorption by Roots - Osmosis and Active Transport",
-                        "Transpiration - Process and Factors",
-                        "Transpiration - Significance and Experiments",
-                        "Photosynthesis - Light and Dark Reactions",
-                        "Photosynthesis - Factors Affecting",
-                        "Photosynthesis - Experiments",
-                        "Chemical Coordination in Plants - Plant Hormones",
-                        "The Circulatory System - Structure of Heart",
-                        "The Circulatory System - Blood Vessels",
-                        "The Circulatory System - Blood Groups & Transfusion",
-                        "The Excretory System - Structure of Nephron",
-                        "The Excretory System - Urine Formation",
-                        "The Nervous System - Structure of Neuron",
-                        "The Nervous System - Brain (Structure and Functions)",
-                        "The Nervous System - Reflex Action",
-                        "The Endocrine System - Pituitary Gland",
-                        "The Endocrine System - Thyroid, Adrenal Glands",
-                        "The Endocrine System - Pancreas (Insulin, Glucagon)",
-                        "The Reproductive System - Male Reproductive System",
-                        "The Reproductive System - Female Reproductive System",
-                        "The Reproductive System - Menstrual Cycle",
-                        "Human Population - Growth and Problems",
-                        "Pollution - Air, Water, Soil Pollution",
-                        "Pollution - Effects and Control Measures"
+                        "Cell Division",
+                        "Genetics",
+                        "Human Evolution",
+                        "Absorption by Roots",
+                        "Transpiration",
+                        "Photosynthesis",
+                        "Chemical Coordination in Plants",
+                        "The Circulatory System",
+                        "The Excretory System",
+                        "The Nervous System",
+                        "The Endocrine System",
+                        "The Reproductive System",
+                        "Human Population",
+                        "Pollution"
                     ]
                 },
                 "Mathematics": {
                     icon: "📐",
                     color: "red",
                     chapters: [
-                        "GST (Goods and Services Tax) - Basic Concepts",
-                        "GST - Problems on CGST and SGST",
-                        "Banking - Recurring Deposits",
-                        "Shares and Dividends - Concepts",
-                        "Shares and Dividends - Problems",
-                        "Linear Inequations - Graphical Representation",
-                        "Quadratic Equations - Factorization Method",
-                        "Quadratic Equations - Formula Method",
-                        "Quadratic Equations - Nature of Roots",
-                        "Ratio and Proportion - Componendo & Dividendo",
+                        "GST (Goods and Services Tax)",
+                        "Banking",
+                        "Shares and Dividends",
+                        "Linear Inequations",
+                        "Quadratic Equations",
+                        "Ratio and Proportion",
                         "Remainder and Factor Theorem",
-                        "Matrices - Types and Operations",
-                        "Matrices - Multiplication",
-                        "Arithmetic Progression - nth Term",
-                        "Arithmetic Progression - Sum of n Terms",
-                        "Geometric Progression - nth Term and Sum",
-                        "Coordinate Geometry - Reflection",
-                        "Coordinate Geometry - Section Formula",
-                        "Coordinate Geometry - Equation of a Line",
-                        "Coordinate Geometry - Slope and Intercepts",
-                        "Similarity of Triangles - Criteria (AA, SAS, SSS)",
-                        "Similarity - Problems and Applications",
-                        "Loci - Theorems and Constructions",
-                        "Circles - Chord Properties",
-                        "Circles - Tangent Properties",
-                        "Circles - Angles in Alternate Segments",
-                        "Circles - Cyclic Quadrilaterals",
-                        "Constructions - Tangents to a Circle",
-                        "Constructions - Circumscribed and Inscribed Circles",
-                        "Mensuration - Cylinder (CSA, TSA, Volume)",
-                        "Mensuration - Cone (CSA, TSA, Volume)",
-                        "Mensuration - Sphere and Hemisphere",
-                        "Trigonometric Identities - Proving Identities",
-                        "Heights and Distances - Angle of Elevation",
-                        "Heights and Distances - Angle of Depression",
-                        "Statistics - Mean (Direct, Short-cut, Step-Deviation)",
-                        "Statistics - Median and Quartiles",
-                        "Statistics - Mode and Ogive",
-                        "Probability - Basic Concepts",
-                        "Probability - Problems on Cards, Dice, Coins"
+                        "Matrices",
+                        "Arithmetic Progression",
+                        "Geometric Progression",
+                        "Coordinate Geometry",
+                        "Similarity",
+                        "Loci",
+                        "Circles",
+                        "Constructions",
+                        "Mensuration",
+                        "Trigonometric Identities",
+                        "Heights and Distances",
+                        "Statistics",
+                        "Probability"
                     ]
                 }
             },
@@ -891,76 +934,53 @@
                     icon: "💼",
                     color: "slate",
                     chapters: [
-                        "Introduction to Business - Meaning and Characteristics",
-                        "Forms of Business Organizations - Sole Proprietorship",
-                        "Forms of Business Organizations - Partnership",
-                        "Forms of Business Organizations - Joint Stock Company",
-                        "Forms of Business Organizations - Cooperative Societies",
-                        "Trade - Internal Trade (Wholesale & Retail)",
-                        "Trade - External Trade (Import & Export)",
-                        "Trade - Documents of Trade",
-                        "Banking Services - Types of Banks",
-                        "Banking Services - Functions of Commercial Banks",
-                        "Banking Services - E-Banking",
-                        "Insurance - Principles of Insurance",
-                        "Insurance - Types (Life, Fire, Marine, Health)",
-                        "Transport - Roadways and Railways",
-                        "Transport - Waterways and Airways",
-                        "Communication - Postal Services",
-                        "Communication - Telecommunication",
-                        "Warehousing - Types and Functions",
-                        "Advertising - Types and Media",
-                        "Advertising - Ethics in Advertising",
-                        "Salesmanship - Qualities of a Good Salesman",
-                        "Entrepreneurship - Qualities and Functions",
-                        "Consumer Protection - Consumer Rights",
-                        "Consumer Protection - Consumer Forums"
+                        "Introduction to Business",
+                        "Forms of Business Organizations",
+                        "Trade",
+                        "Banking Services",
+                        "Insurance",
+                        "Transport",
+                        "Communication",
+                        "Warehousing",
+                        "Advertising",
+                        "Salesmanship",
+                        "Entrepreneurship",
+                        "Consumer Protection"
                     ]
                 },
                 "Economics": {
                     icon: "📈",
                     color: "teal",
                     chapters: [
-                        "Introduction to Economics - Basic Concepts",
-                        "Types of Economies - Capitalist, Socialist, Mixed",
-                        "Demand - Law of Demand",
-                        "Demand - Determinants of Demand",
-                        "Supply - Law of Supply",
-                        "Supply - Determinants of Supply",
-                        "Price Determination - Equilibrium",
-                        "Elasticity of Demand - Types and Measurement",
-                        "National Income - Concepts (GDP, GNP, NNP)",
-                        "National Income - Methods of Calculation",
-                        "Money - Functions and Types",
-                        "Banking - Commercial and Central Banks",
-                        "Banking - Credit Creation",
-                        "Public Finance - Government Budget",
-                        "Public Finance - Taxation (Direct & Indirect)",
-                        "Indian Economy - Agriculture Sector",
-                        "Indian Economy - Industrial Sector",
-                        "Indian Economy - Service Sector",
-                        "Poverty - Causes and Measures",
-                        "Unemployment - Types and Solutions",
-                        "Infrastructure Development - Physical and Social",
-                        "Globalization - Meaning and Impact"
+                        "Introduction to Economics",
+                        "Types of Economies",
+                        "Demand and Supply",
+                        "Price Determination",
+                        "Elasticity of Demand",
+                        "National Income",
+                        "Money and Banking",
+                        "Public Finance",
+                        "Indian Economy",
+                        "Poverty and Unemployment",
+                        "Infrastructure Development",
+                        "Globalization"
                     ]
                 },
                 "Mathematics (Commerce)": {
                     icon: "🔢",
                     color: "pink",
                     chapters: [
-                        "GST (Goods and Services Tax) - Basic Concepts",
-                        "GST - Problems on CGST and SGST",
-                        "Banking - Recurring Deposits",
-                        "Shares and Dividends - Concepts and Problems",
-                        "Linear Inequations - Graphical Representation",
-                        "Quadratic Equations - All Methods",
+                        "GST (Goods and Services Tax)",
+                        "Banking",
+                        "Shares and Dividends",
+                        "Linear Inequations",
+                        "Quadratic Equations",
                         "Ratio and Proportion",
-                        "Matrices - Types and Operations",
+                        "Matrices",
                         "Arithmetic Progression",
-                        "Coordinate Geometry - Equation of a Line",
-                        "Mensuration - Cylinder, Cone and Sphere",
-                        "Statistics - Mean, Median, Mode",
+                        "Coordinate Geometry",
+                        "Mensuration",
+                        "Statistics",
                         "Probability"
                     ]
                 }
@@ -971,43 +991,20 @@
                         icon: "💻",
                         color: "cyan",
                         chapters: [
-                            "Introduction to Object Oriented Programming - Concepts",
-                            "OOP - Features (Encapsulation, Inheritance, Polymorphism)",
+                            "Introduction to Object Oriented Programming",
                             "Elementary Concepts of Objects and Classes",
-                            "Values and Data Types - Primitive Types",
-                            "Values and Data Types - Reference Types",
-                            "Operators in Java - Arithmetic Operators",
-                            "Operators in Java - Relational & Logical Operators",
-                            "Operators in Java - Assignment & Ternary Operators",
-                            "Input in Java - Scanner Class",
-                            "Input in Java - BufferedReader Class",
-                            "Mathematical Library Methods - Math Class",
-                            "Conditional Statements - if Statement",
-                            "Conditional Statements - if-else Statement",
-                            "Conditional Statements - Nested if-else",
-                            "Conditional Statements - switch case",
-                            "Iterative Statements - for loop",
-                            "Iterative Statements - while loop",
-                            "Iterative Statements - do-while loop",
-                            "Nested Loops - Patterns and Series",
-                            "Series Programs - Fibonacci, Prime, etc.",
-                            "Pattern Programs - Star and Number Patterns",
-                            "Functions / Methods - Definition and Calling",
-                            "Functions / Methods - Parameters and Return Types",
-                            "Function Overloading - Concept and Examples",
-                            "Arrays - Single Dimensional (Declaration & Initialization)",
-                            "Arrays - Single Dimensional (Traversal & Operations)",
-                            "Arrays - Searching (Linear & Binary)",
-                            "Arrays - Sorting (Bubble & Selection)",
-                            "Arrays - Double Dimensional (Declaration)",
-                            "Arrays - Double Dimensional (Operations)",
-                            "String Handling - String Class",
-                            "String Functions - length(), charAt(), indexOf()",
-                            "String Functions - substring(), concat(), replace()",
-                            "String Functions - toUpperCase(), toLowerCase(), trim()",
-                            "String Functions - equals(), compareTo()",
-                            "User Defined Programs - String Manipulation",
-                            "User Defined Programs - Number Operations"
+                            "Values and Data Types",
+                            "Operators in Java",
+                            "Input in Java",
+                            "Mathematical Library Methods",
+                            "Conditional Statements",
+                            "Iterative Statements",
+                            "Nested Loops",
+                            "Functions / Methods",
+                            "Function Overloading",
+                            "Arrays - Single Dimensional",
+                            "Arrays - Double Dimensional",
+                            "String Handling"
                         ]
                     }
                 },
@@ -1016,28 +1013,17 @@
                         icon: "🏃",
                         color: "lime",
                         chapters: [
-                            "Health and Physical Fitness - Definition",
-                            "Health and Physical Fitness - Components",
-                            "First Aid - Basic Principles",
-                            "First Aid - Treatment of Common Injuries",
-                            "Personal Hygiene - Importance and Practices",
-                            "Sports and Nutrition - Balanced Diet",
-                            "Sports and Nutrition - Diet for Athletes",
-                            "Posture - Good and Bad Posture",
-                            "Common Postural Deformities - Kyphosis, Lordosis, Scoliosis",
-                            "Safety in Sports - Precautions",
-                            "Sports Injuries - Types and Treatment",
-                            "Athletics - Track Events (Sprints, Relays)",
-                            "Athletics - Field Events (Shot Put, Long Jump)",
-                            "Team Games - Football (Rules and Skills)",
-                            "Team Games - Basketball (Rules and Skills)",
-                            "Team Games - Cricket (Rules and Skills)",
-                            "Team Games - Hockey (Rules and Skills)",
-                            "Team Games - Volleyball (Rules and Skills)",
-                            "Individual Sports - Badminton",
-                            "Individual Sports - Table Tennis",
-                            "Yoga - Asanas and Pranayama",
-                            "Yoga - Benefits and Precautions"
+                            "Health and Physical Fitness",
+                            "First Aid",
+                            "Personal Hygiene",
+                            "Sports and Nutrition",
+                            "Posture and Postural Deformities",
+                            "Safety in Sports",
+                            "Sports Injuries",
+                            "Athletics",
+                            "Team Games",
+                            "Individual Sports",
+                            "Yoga"
                         ]
                     }
                 },
@@ -1047,30 +1033,19 @@
                         color: "rose",
                         chapters: [
                             "Fundamentals of Art and Design",
-                            "Elements of Art - Line",
-                            "Elements of Art - Shape and Form",
-                            "Elements of Art - Color",
-                            "Elements of Art - Texture and Space",
-                            "Principles of Design - Balance and Proportion",
-                            "Principles of Design - Rhythm and Unity",
-                            "Color Theory - Color Wheel",
-                            "Color Theory - Color Harmony",
-                            "Perspective Drawing - One Point Perspective",
-                            "Perspective Drawing - Two Point Perspective",
-                            "Still Life Drawing - Composition",
-                            "Still Life Drawing - Shading Techniques",
-                            "Nature Study - Plants and Flowers",
-                            "Nature Study - Animals and Birds",
-                            "Figure Drawing - Human Proportions",
-                            "Portrait Drawing - Facial Features",
-                            "Landscape Drawing - Composition and Depth",
-                            "Poster Making - Design Principles",
-                            "Illustration - Storytelling through Art",
-                            "Indian Art Forms - Madhubani, Warli",
-                            "Indian Art Forms - Miniature Paintings",
-                            "History of Art - Ancient Indian Art",
-                            "History of Art - Medieval Indian Art",
-                            "History of Art - Modern Indian Art"
+                            "Elements of Art",
+                            "Principles of Design",
+                            "Color Theory",
+                            "Perspective Drawing",
+                            "Still Life Drawing",
+                            "Nature Study",
+                            "Figure Drawing",
+                            "Portrait Drawing",
+                            "Landscape Drawing",
+                            "Poster Making",
+                            "Illustration",
+                            "Indian Art Forms",
+                            "History of Art"
                         ]
                     }
                 }
@@ -1086,11 +1061,22 @@
             stream: '',
             optional: '',
             examDate: '',
-            progress: {}
+            progress: {},
+            settings: {
+                theme: 'dark',
+                color: 'blue'
+            }
         };
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // Load saved settings
+            const savedSettings = localStorage.getItem('icse_settings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                applySettings(settings);
+            }
+            
             // Date input preview
             document.getElementById('examDate').addEventListener('change', (e) => {
                 const date = new Date(e.target.value);
@@ -1133,6 +1119,116 @@
             });
         });
 
+        // Settings Functions
+        function openSettings() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+            document.getElementById('newExamDate').value = userData.examDate || '';
+            updateSettingsUI();
+        }
+        
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+        
+        function updateSettingsUI() {
+            const theme = userData.settings?.theme || 'dark';
+            const color = userData.settings?.color || 'blue';
+            
+            // Update theme buttons
+            document.getElementById('darkModeBtn').classList.toggle('border-purple-500', theme === 'dark');
+            document.getElementById('darkModeBtn').classList.toggle('bg-purple-500/20', theme === 'dark');
+            document.getElementById('lightModeBtn').classList.toggle('border-yellow-500', theme === 'light');
+            document.getElementById('lightModeBtn').classList.toggle('bg-yellow-500/20', theme === 'light');
+            
+            // Update color buttons
+            document.querySelectorAll('.color-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.color === color);
+            });
+        }
+        
+        function setThemeMode(mode) {
+            userData.settings = userData.settings || {};
+            userData.settings.theme = mode;
+            applySettings(userData.settings);
+            saveSettings();
+            updateSettingsUI();
+        }
+        
+        function setThemeColor(color) {
+            userData.settings = userData.settings || {};
+            userData.settings.color = color;
+            applySettings(userData.settings);
+            saveSettings();
+            updateSettingsUI();
+        }
+        
+        function applySettings(settings) {
+            const body = document.body;
+            
+            // Apply theme mode
+            body.classList.remove('dark-mode', 'light-mode');
+            body.classList.add(settings.theme === 'light' ? 'light-mode' : 'dark-mode');
+            
+            // Apply color theme
+            body.classList.remove('theme-blue', 'theme-red', 'theme-pink', 'theme-purple', 'theme-green', 'theme-orange', 'theme-cyan');
+            body.classList.add(`theme-${settings.color || 'blue'}`);
+        }
+        
+        function saveSettings() {
+            localStorage.setItem('icse_settings', JSON.stringify(userData.settings));
+            saveUserData();
+        }
+        
+        async function updateExamDate() {
+            const newDate = document.getElementById('newExamDate').value;
+            if (newDate) {
+                userData.examDate = newDate;
+                await saveUserData();
+                updateTimer();
+                closeSettings();
+                createConfetti();
+            }
+        }
+        
+        async function resetProgress() {
+            if (confirm('Are you sure you want to reset all your progress? This cannot be undone!')) {
+                userData.progress = {};
+                await saveUserData();
+                renderDashboard();
+                closeSettings();
+            }
+        }
+        
+        async function resetAll() {
+            if (confirm('Are you sure you want to reset EVERYTHING? You will need to set up again. This cannot be undone!')) {
+                userData = {
+                    name: currentUser.displayName || 'Student',
+                    email: currentUser.email,
+                    photoURL: currentUser.photoURL || '',
+                    stream: '',
+                    optional: '',
+                    examDate: '',
+                    progress: {},
+                    settings: { theme: 'dark', color: 'blue' }
+                };
+                await saveUserData();
+                closeSettings();
+                document.getElementById('setupUserName').textContent = userData.name.split(' ')[0];
+                showPage('setupPage');
+                
+                // Reset setup steps
+                document.getElementById('step1').classList.remove('hidden');
+                document.getElementById('step2').classList.add('hidden');
+                document.getElementById('step3').classList.add('hidden');
+                document.getElementById('stepProgress1').style.width = '0%';
+                document.getElementById('stepProgress2').style.width = '0%';
+                document.getElementById('stepIndicator2').classList.add('bg-slate-700');
+                document.getElementById('stepIndicator2').classList.remove('bg-blue-600');
+                document.getElementById('stepIndicator3').classList.add('bg-slate-700');
+                document.getElementById('stepIndicator3').classList.remove('bg-blue-600');
+            }
+        }
+
         // Google Sign In
         async function signInWithGoogle() {
             const btn = document.getElementById('googleSignInBtn');
@@ -1148,7 +1244,6 @@
                 // Check if user exists in Firestore
                 const doc = await db.collection('users').doc(user.uid).get();
                 if (!doc.exists) {
-                    // New user - create document
                     await db.collection('users').doc(user.uid).set({
                         name: user.displayName,
                         email: user.email,
@@ -1196,13 +1291,18 @@
                 if (doc.exists) {
                     const data = doc.data();
                     userData = { ...userData, ...data };
+                    if (userData.settings) {
+                        applySettings(userData.settings);
+                    }
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
-                // Fallback to localStorage
                 const localData = localStorage.getItem('icse_userData_' + currentUser.uid);
                 if (localData) {
                     userData = { ...userData, ...JSON.parse(localData) };
+                    if (userData.settings) {
+                        applySettings(userData.settings);
+                    }
                 }
             }
         }
@@ -1224,7 +1324,7 @@
                 try {
                     await auth.signOut();
                     currentUser = null;
-                    userData = { name: '', email: '', photoURL: '', stream: '', optional: '', examDate: '', progress: {} };
+                    userData = { name: '', email: '', photoURL: '', stream: '', optional: '', examDate: '', progress: {}, settings: { theme: 'dark', color: 'blue' } };
                     showPage('authPage');
                     document.getElementById('googleSignInBtn').classList.remove('hidden');
                     document.getElementById('authLoading').classList.add('hidden');
@@ -1249,7 +1349,6 @@
             event.currentTarget.classList.add(stream === 'science' ? 'border-blue-500' : 'border-purple-500');
             event.currentTarget.classList.add(stream === 'science' ? 'bg-blue-500/20' : 'bg-purple-500/20');
             
-            // Update progress indicators
             document.getElementById('stepProgress1').style.width = '100%';
             document.getElementById('stepIndicator2').classList.remove('bg-slate-700');
             document.getElementById('stepIndicator2').classList.add('bg-blue-600');
@@ -1269,7 +1368,6 @@
             const colors = { computer: 'cyan', pe: 'green', art: 'pink' };
             event.currentTarget.classList.add(`border-${colors[optional]}-500`);
             
-            // Update progress indicators
             document.getElementById('stepProgress2').style.width = '100%';
             document.getElementById('stepIndicator3').classList.remove('bg-slate-700');
             document.getElementById('stepIndicator3').classList.add('bg-blue-600');
@@ -1279,7 +1377,6 @@
                 document.getElementById('step3').classList.remove('hidden');
                 document.getElementById('step3').classList.add('animate-slide-up');
                 
-                // Set default exam date to next year March
                 const nextYear = new Date().getFullYear() + 1;
                 document.getElementById('examDate').value = `${nextYear}-03-01`;
                 document.getElementById('examDate').dispatchEvent(new Event('change'));
@@ -1320,7 +1417,6 @@
         function renderDashboard() {
             document.getElementById('userName').textContent = userData.name;
             
-            // Set user photo
             const userPhoto = document.getElementById('userPhoto');
             if (userData.photoURL) {
                 userPhoto.src = userData.photoURL;
@@ -1392,12 +1488,10 @@
         function getSubjectsForUser() {
             const subjects = [];
             
-            // Common subjects
             Object.entries(syllabusData.common).forEach(([name, data]) => {
                 subjects.push({ name, ...data });
             });
 
-            // Stream subjects
             const streamData = syllabusData[userData.stream];
             if (streamData) {
                 Object.entries(streamData).forEach(([name, data]) => {
@@ -1405,7 +1499,6 @@
                 });
             }
 
-            // Optional subject
             const optionalData = syllabusData.optional[userData.optional];
             if (optionalData) {
                 Object.entries(optionalData).forEach(([name, data]) => {
