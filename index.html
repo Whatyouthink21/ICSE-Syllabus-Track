@@ -1,0 +1,2614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICSE Planner - Syllabus Tracker 2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(59, 130, 246, 0.4); }
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slide-in-left {
+            from { opacity: 0; transform: translateX(-100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slide-in-right {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes bounce-in {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { transform: scale(1.1); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+        
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-500px) rotate(720deg); opacity: 0; }
+        }
+        
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #3b82f6; }
+        }
+        
+        @keyframes rotate-3d {
+            0% { transform: perspective(1000px) rotateY(0deg); }
+            100% { transform: perspective(1000px) rotateY(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+        }
+        
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        .animate-gradient { 
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient-shift 15s ease infinite;
+        }
+        .animate-slide-up { animation: slide-up 0.8s ease-out forwards; }
+        .animate-slide-left { animation: slide-in-left 0.8s ease-out forwards; }
+        .animate-slide-right { animation: slide-in-right 0.8s ease-out forwards; }
+        .animate-bounce-in { animation: bounce-in 0.6s ease-out forwards; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-slideDown { animation: slideDown 0.5s ease-out forwards; }
+        .animate-heartbeat { animation: heartbeat 1s ease-in-out infinite; }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .btn-3d {
+            transition: all 0.2s;
+            box-shadow: 0 6px 0 #1e40af;
+        }
+        .btn-3d:active {
+            box-shadow: 0 2px 0 #1e40af;
+            transform: translateY(4px);
+        }
+        
+        .btn-green-3d {
+            box-shadow: 0 6px 0 #065f46;
+        }
+        .btn-green-3d:active {
+            box-shadow: 0 2px 0 #065f46;
+            transform: translateY(4px);
+        }
+        
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .topic-item {
+            transition: all 0.3s ease;
+        }
+        .topic-item:hover {
+            transform: translateX(10px);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .checkbox-fancy {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #3b82f6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .checkbox-fancy:checked {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-color: #8b5cf6;
+        }
+        .checkbox-fancy:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .timer-digit {
+            background: linear-gradient(180deg, #1e3a8a 0%, #3b82f6 100%);
+            border-radius: 10px;
+            padding: 10px 15px;
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        .subject-card {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .subject-card:hover {
+            transform: rotateY(5deg) rotateX(5deg) scale(1.05);
+        }
+        
+        .tab-btn {
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+        
+        .input-field {
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            transform: scale(1.02);
+        }
+        
+        .chapter-group {
+            border-left: 3px solid #3b82f6;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+        
+        .password-toggle {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .password-toggle:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-x-hidden">
+    
+    <!-- Floating Particles Background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Screen 1: Login/Signup -->
+    <div id="screen-auth" class="screen active min-h-screen flex items-center justify-center p-4">
+        <div class="text-center max-w-md mx-auto w-full">
+            <!-- ICSE Logo -->
+            <div class="mb-8 animate-float">
+                <div class="w-32 h-32 mx-auto bg-white rounded-full flex items-center justify-center shadow-2xl animate-pulse-glow">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4a/CISCE_logo.png/200px-CISCE_logo.png" 
+                         alt="ICSE Logo" class="w-24 h-24 object-contain"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-blue-900 font-bold text-2xl\'>ICSE</span>';">
+                </div>
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-slide-up">
+                ICSE Planner
+            </h1>
+            <p class="text-lg text-blue-200 mb-8 animate-slide-up" style="animation-delay: 0.2s;">
+                Your Ultimate Syllabus Tracker for ICSE 2025
+            </p>
+            
+            <!-- Auth Tabs -->
+            <div class="glass rounded-3xl p-8 animate-bounce-in" style="animation-delay: 0.4s;">
+                <div class="flex mb-6 bg-slate-800/50 rounded-xl p-1">
+                    <button onclick="switchAuthTab('login')" id="loginTab" class="tab-btn flex-1 py-3 rounded-lg font-semibold active">
+                        🔑 Login
+                    </button>
+                    <button onclick="switchAuthTab('signup')" id="signupTab" class="tab-btn flex-1 py-3 rounded-lg font-semibold">
+                        ✨ Sign Up
+                    </button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <div class="mb-4">
+                        <input type="text" id="loginUsername" placeholder="Username" 
+                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-blue-400/50 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/30 text-lg">
+                    </div>
+                    <div class="mb-4 relative">
+                        <input type="password" id="loginPassword" placeholder="Password" 
+                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-blue-400/50 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/30 text-lg pr-14">
+                        <span onclick="togglePassword('loginPassword', this)" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-2xl">👁️</span>
+                    </div>
+                    <div id="loginError" class="text-red-400 text-sm mb-4 hidden"></div>
+                    <button onclick="handleLogin()" 
+                            class="btn-3d w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl text-xl hover:from-blue-600 hover:to-purple-700 transition-all">
+                        🚀 Login
+                    </button>
+                </div>
+                
+                <!-- Signup Form -->
+                <div id="signupForm" class="hidden">
+                    <div class="mb-4">
+                        <input type="text" id="signupName" placeholder="Full Name" 
+                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-green-400/50 rounded-xl text-white placeholder-green-200 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/30 text-lg">
+                    </div>
+                    <div class="mb-4">
+                        <input type="text" id="signupUsername" placeholder="Choose Username" 
+                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-green-400/50 rounded-xl text-white placeholder-green-200 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/30 text-lg">
+                    </div>
+                    <div class="mb-4 relative">
+                        <input type="password" id="signupPassword" placeholder="Create Password" 
+                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-green-400/50 rounded-xl text-white placeholder-green-200 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/30 text-lg pr-14">
+                        <span onclick="togglePassword('signupPassword', this)" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-2xl">👁️</span>
+                    </div>
+                    <div class="mb-4 relative">
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" 
+                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-green-400/50 rounded-xl text-white placeholder-green-200 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/30 text-lg pr-14">
+                        <span onclick="togglePassword('signupConfirmPassword', this)" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-2xl">👁️</span>
+                    </div>
+                    <div id="signupError" class="text-red-400 text-sm mb-4 hidden"></div>
+                    <div id="signupSuccess" class="text-green-400 text-sm mb-4 hidden"></div>
+                    <button onclick="handleSignup()" 
+                            class="btn-3d btn-green-3d w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 px-8 rounded-xl text-xl hover:from-green-600 hover:to-emerald-700 transition-all">
+                        ✨ Create Account
+                    </button>
+                </div>
+                
+                <p class="mt-6 text-blue-300 text-sm" id="existingUserHint"></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 2: Stream Selection -->
+    <div id="screen-stream" class="screen min-h-screen flex items-center justify-center p-4">
+        <div class="text-center max-w-4xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 animate-slide-up">Choose Your Stream</h2>
+            <p class="text-xl text-blue-200 mb-4 animate-slide-up" style="animation-delay: 0.1s;">Welcome, <span id="welcomeName" class="text-yellow-400 font-bold"></span>! 🎉</p>
+            <p class="text-lg text-blue-300 mb-12 animate-slide-up" style="animation-delay: 0.2s;">Select your academic path</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div onclick="selectStream('science')" 
+                     class="card-hover glass rounded-3xl p-8 cursor-pointer border-2 border-transparent hover:border-green-400 animate-slide-left">
+                    <div class="text-8xl mb-4 animate-float">🔬</div>
+                    <h3 class="text-3xl font-bold text-green-400 mb-2">Science</h3>
+                    <p class="text-blue-200">Physics, Chemistry, Biology & Mathematics</p>
+                    <div class="mt-4 flex flex-wrap justify-center gap-2">
+                        <span class="px-3 py-1 bg-green-500/20 rounded-full text-sm">Physics</span>
+                        <span class="px-3 py-1 bg-green-500/20 rounded-full text-sm">Chemistry</span>
+                        <span class="px-3 py-1 bg-green-500/20 rounded-full text-sm">Biology</span>
+                        <span class="px-3 py-1 bg-green-500/20 rounded-full text-sm">Maths</span>
+                    </div>
+                </div>
+                
+                <div onclick="selectStream('commerce')" 
+                     class="card-hover glass rounded-3xl p-8 cursor-pointer border-2 border-transparent hover:border-yellow-400 animate-slide-right">
+                    <div class="text-8xl mb-4 animate-float" style="animation-delay: 0.5s;">📊</div>
+                    <h3 class="text-3xl font-bold text-yellow-400 mb-2">Commerce</h3>
+                    <p class="text-blue-200">Commercial Studies, Economics & Mathematics</p>
+                    <div class="mt-4 flex flex-wrap justify-center gap-2">
+                        <span class="px-3 py-1 bg-yellow-500/20 rounded-full text-sm">Commerce</span>
+                        <span class="px-3 py-1 bg-yellow-500/20 rounded-full text-sm">Economics</span>
+                        <span class="px-3 py-1 bg-yellow-500/20 rounded-full text-sm">Maths</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 3: Optional Subject Selection -->
+    <div id="screen-optional" class="screen min-h-screen flex items-center justify-center p-4">
+        <div class="text-center max-w-5xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 animate-slide-up">Choose Your Optional Subject</h2>
+            <p class="text-xl text-blue-200 mb-12 animate-slide-up" style="animation-delay: 0.1s;">Select one optional subject</p>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div onclick="selectOptional('computer')" 
+                     class="card-hover glass rounded-3xl p-6 cursor-pointer border-2 border-transparent hover:border-cyan-400 animate-bounce-in" style="animation-delay: 0.1s;">
+                    <div class="text-7xl mb-4 animate-float">💻</div>
+                    <h3 class="text-2xl font-bold text-cyan-400 mb-2">Computer Applications</h3>
+                    <p class="text-blue-200 text-sm">Java Programming, Algorithms & Data Structures</p>
+                </div>
+                
+                <div onclick="selectOptional('pe')" 
+                     class="card-hover glass rounded-3xl p-6 cursor-pointer border-2 border-transparent hover:border-orange-400 animate-bounce-in" style="animation-delay: 0.2s;">
+                    <div class="text-7xl mb-4 animate-float" style="animation-delay: 0.3s;">🏃</div>
+                    <h3 class="text-2xl font-bold text-orange-400 mb-2">Physical Education</h3>
+                    <p class="text-blue-200 text-sm">Sports, Fitness & Health Education</p>
+                </div>
+                
+                <div onclick="selectOptional('arts')" 
+                     class="card-hover glass rounded-3xl p-6 cursor-pointer border-2 border-transparent hover:border-pink-400 animate-bounce-in" style="animation-delay: 0.3s;">
+                    <div class="text-7xl mb-4 animate-float" style="animation-delay: 0.6s;">🎨</div>
+                    <h3 class="text-2xl font-bold text-pink-400 mb-2">Art / Music</h3>
+                    <p class="text-blue-200 text-sm">Visual Arts, Music Theory & Practice</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 4: Exam Date -->
+    <div id="screen-exam" class="screen min-h-screen flex items-center justify-center p-4">
+        <div class="text-center max-w-xl mx-auto">
+            <div class="text-8xl mb-6 animate-float">📅</div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 animate-slide-up">When's Your Exam?</h2>
+            <p class="text-xl text-blue-200 mb-8 animate-slide-up" style="animation-delay: 0.1s;">Set your target date</p>
+            
+            <div class="glass rounded-3xl p-8 animate-bounce-in" style="animation-delay: 0.2s;">
+                <input type="date" id="examDate" 
+                       class="w-full px-6 py-4 bg-white/10 border-2 border-blue-400/50 rounded-xl text-white focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/30 transition-all text-lg mb-6">
+                
+                <button onclick="setExamDate()" 
+                        class="btn-3d btn-green-3d w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 px-8 rounded-xl text-xl hover:from-green-600 hover:to-emerald-700 transition-all">
+                    ✅ Set Target & Begin
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 5: Main Dashboard -->
+    <div id="screen-dashboard" class="screen min-h-screen">
+        <!-- Header -->
+        <header class="glass sticky top-0 z-50 p-4">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4a/CISCE_logo.png/200px-CISCE_logo.png" 
+                             alt="ICSE" class="w-10 h-10 object-contain"
+                             onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-blue-900 font-bold text-xs\'>ICSE</span>';">
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">ICSE Planner</h1>
+                        <p class="text-sm text-blue-300">Welcome, <span id="displayName">Student</span>!</p>
+                    </div>
+                </div>
+                
+                <!-- Timer -->
+                <div class="flex items-center gap-2">
+                    <div class="timer-digit">
+                        <div class="text-2xl font-bold" id="days">00</div>
+                        <div class="text-xs text-blue-300">Days</div>
+                    </div>
+                    <span class="text-2xl animate-heartbeat">:</span>
+                    <div class="timer-digit">
+                        <div class="text-2xl font-bold" id="hours">00</div>
+                        <div class="text-xs text-blue-300">Hrs</div>
+                    </div>
+                    <span class="text-2xl animate-heartbeat">:</span>
+                    <div class="timer-digit">
+                        <div class="text-2xl font-bold" id="minutes">00</div>
+                        <div class="text-xs text-blue-300">Min</div>
+                    </div>
+                    <span class="text-2xl animate-heartbeat">:</span>
+                    <div class="timer-digit">
+                        <div class="text-2xl font-bold" id="seconds">00</div>
+                        <div class="text-xs text-blue-300">Sec</div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button onclick="logout()" class="px-4 py-2 bg-yellow-500/20 hover:bg-yellow-500/40 rounded-lg text-yellow-300 transition-all">
+                        🚪 Logout
+                    </button>
+                    <button onclick="resetProgress()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/40 rounded-lg text-red-300 transition-all">
+                        🔄 Reset Progress
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Overall Progress -->
+        <div class="max-w-7xl mx-auto p-4">
+            <div class="glass rounded-2xl p-6 mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <h2 class="text-2xl font-bold">📈 Overall Progress</h2>
+                    <div class="text-3xl font-bold text-green-400" id="overallPercent">0%</div>
+                </div>
+                <div class="h-6 bg-slate-700 rounded-full overflow-hidden">
+                    <div id="overallProgress" class="progress-bar h-full bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-full" style="width: 0%"></div>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-4 text-sm">
+                    <span class="px-3 py-1 bg-blue-500/20 rounded-full" id="streamBadge">Stream: -</span>
+                    <span class="px-3 py-1 bg-purple-500/20 rounded-full" id="optionalBadge">Optional: -</span>
+                    <span class="px-3 py-1 bg-green-500/20 rounded-full" id="completedCount">0 / 0 Topics</span>
+                    <span class="px-3 py-1 bg-yellow-500/20 rounded-full" id="examDateBadge">Exam: -</span>
+                </div>
+            </div>
+            
+            <!-- Subjects Grid -->
+            <div id="subjectsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Subjects will be dynamically added here -->
+            </div>
+        </div>
+        
+        <!-- Footer Disclaimer -->
+        <footer class="mt-12 p-6 text-center border-t border-white/10">
+            <p class="text-blue-300 text-sm">
+                ⚠️ <strong>Disclaimer:</strong> This website is <strong>NOT</strong> affiliated with, endorsed by, or connected to the 
+                <strong>Council for the Indian School Certificate Examinations (CISCE)</strong>. 
+                This is an independent study tool created for educational purposes only.
+            </p>
+            <p class="text-blue-400 text-xs mt-2">© 2025 ICSE Planner | Made with ❤️ for ICSE Students</p>
+        </footer>
+    </div>
+    
+    <!-- Subject Modal -->
+    <div id="subjectModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="glass rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto my-8">
+            <div class="sticky top-0 glass p-6 border-b border-white/10 flex items-center justify-between z-10">
+                <div>
+                    <h2 id="modalTitle" class="text-2xl font-bold">Subject</h2>
+                    <p id="modalProgress" class="text-sm text-blue-300"></p>
+                </div>
+                <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-red-500/20 hover:bg-red-500/40 flex items-center justify-center transition-all text-xl">
+                    ✕
+                </button>
+            </div>
+            <div id="modalContent" class="p-6">
+                <!-- Topics will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ COMPLETE ICSE 2025 SYLLABUS DATA ============
+        const syllabusData = {
+            // Common subjects for both streams
+            common: {
+                english_lang: {
+                    name: "English Language",
+                    icon: "📝",
+                    color: "blue",
+                    chapters: {
+                        "Composition": [
+                            "Essay Writing - Argumentative Essays",
+                            "Essay Writing - Descriptive Essays",
+                            "Essay Writing - Narrative Essays",
+                            "Essay Writing - Reflective Essays",
+                            "Letter Writing - Formal Letters",
+                            "Letter Writing - Informal Letters",
+                            "Letter Writing - Letters to Editor",
+                            "Letter Writing - Application Letters",
+                            "Email Writing",
+                            "Notice Writing",
+                            "Report Writing",
+                            "Proposal Writing",
+                            "Speech Writing",
+                            "Article Writing"
+                        ],
+                        "Grammar": [
+                            "Tenses - Simple Present",
+                            "Tenses - Present Continuous",
+                            "Tenses - Present Perfect",
+                            "Tenses - Present Perfect Continuous",
+                            "Tenses - Simple Past",
+                            "Tenses - Past Continuous",
+                            "Tenses - Past Perfect",
+                            "Tenses - Past Perfect Continuous",
+                            "Tenses - Simple Future",
+                            "Tenses - Future Continuous",
+                            "Tenses - Future Perfect",
+                            "Voice - Active to Passive",
+                            "Voice - Passive to Active",
+                            "Direct & Indirect Speech - Statements",
+                            "Direct & Indirect Speech - Questions",
+                            "Direct & Indirect Speech - Commands",
+                            "Direct & Indirect Speech - Exclamations",
+                            "Prepositions",
+                            "Conjunctions",
+                            "Sentence Transformation",
+                            "Error Correction / Editing",
+                            "Fill in the Blanks",
+                            "Sentence Reordering",
+                            "Question Tags"
+                        ],
+                        "Comprehension": [
+                            "Prose Passage - Factual",
+                            "Prose Passage - Literary",
+                            "Prose Passage - Discursive",
+                            "Poetry Comprehension"
+                        ]
+                    }
+                },
+                english_lit: {
+                    name: "English Literature",
+                    icon: "📚",
+                    color: "indigo",
+                    chapters: {
+                        "Julius Caesar - Act III (Shakespeare)": [
+                            "Act 3 Scene 1 - The Assassination of Caesar",
+                            "Act 3 Scene 1 - Caesar at the Capitol",
+                            "Act 3 Scene 1 - The Conspirators Strike",
+                            "Act 3 Scene 1 - Antony's Arrival",
+                            "Act 3 Scene 1 - Antony Shakes Hands with Conspirators",
+                            "Act 3 Scene 2 - Brutus's Funeral Speech",
+                            "Act 3 Scene 2 - Antony's Funeral Speech (Friends, Romans, Countrymen)",
+                            "Act 3 Scene 2 - Reading of Caesar's Will",
+                            "Act 3 Scene 2 - The Mob's Reaction",
+                            "Act 3 Scene 3 - Cinna the Poet's Death",
+                            "Character Analysis - Julius Caesar",
+                            "Character Analysis - Marcus Brutus",
+                            "Character Analysis - Mark Antony",
+                            "Character Analysis - Cassius"
+                        ],
+                        "Julius Caesar - Act IV (Shakespeare)": [
+                            "Act 4 Scene 1 - The Triumvirate (Antony, Octavius, Lepidus)",
+                            "Act 4 Scene 1 - Proscription List",
+                            "Act 4 Scene 2 - Brutus and Cassius Meet at Sardis",
+                            "Act 4 Scene 2 - Tension Between Brutus and Cassius",
+                            "Act 4 Scene 3 - The Quarrel Scene",
+                            "Act 4 Scene 3 - Accusations of Bribery",
+                            "Act 4 Scene 3 - Reconciliation",
+                            "Act 4 Scene 3 - News of Portia's Death",
+                            "Act 4 Scene 3 - Ghost of Caesar Appears",
+                            "Act 4 Scene 3 - Planning for Philippi",
+                            "Themes - Friendship and Betrayal",
+                            "Themes - Power and Ambition"
+                        ],
+                        "Julius Caesar - Act V (Shakespeare)": [
+                            "Act 5 Scene 1 - Before the Battle of Philippi",
+                            "Act 5 Scene 1 - Parley Between Armies",
+                            "Act 5 Scene 1 - Brutus and Cassius's Farewell",
+                            "Act 5 Scene 2 - The Battle Begins",
+                            "Act 5 Scene 3 - Cassius's Defeat",
+                            "Act 5 Scene 3 - Cassius's Suicide",
+                            "Act 5 Scene 3 - Titinius's Death",
+                            "Act 5 Scene 4 - Young Cato's Death",
+                            "Act 5 Scene 4 - Lucilius Captured",
+                            "Act 5 Scene 5 - Brutus's Final Moments",
+                            "Act 5 Scene 5 - Brutus's Suicide",
+                            "Act 5 Scene 5 - Antony's Tribute to Brutus",
+                            "Themes - Honor and Nobility",
+                            "Themes - Fate vs Free Will",
+                            "Themes - Public vs Private Self",
+                            "Literary Devices in Julius Caesar",
+                            "Important Quotations Analysis"
+                        ],
+                        "Treasure Chest - Short Stories": [
+                            "With the Photographer - Stephen Leacock (Summary)",
+                            "With the Photographer - Character Analysis",
+                            "With the Photographer - Humour and Satire",
+                            "With the Photographer - Important Questions",
+                            "The Elevator - William Sleator (Summary)",
+                            "The Elevator - Martin's Fear and Character",
+                            "The Elevator - Suspense and Horror Elements",
+                            "The Elevator - Important Questions",
+                            "The Girl Who Can - Ama Ata Aidoo (Summary)",
+                            "The Girl Who Can - Adjoa's Character",
+                            "The Girl Who Can - Themes of Gender and Empowerment",
+                            "The Girl Who Can - Important Questions",
+                            "The Pedestrian - Ray Bradbury (Summary)",
+                            "The Pedestrian - Leonard Mead's Character",
+                            "The Pedestrian - Dystopian Society Theme",
+                            "The Pedestrian - Technology vs Humanity",
+                            "The Pedestrian - Important Questions",
+                            "The Last Lesson - Alphonse Daudet (Summary)",
+                            "The Last Lesson - Franz's Character Development",
+                            "The Last Lesson - M. Hamel's Character",
+                            "The Last Lesson - Theme of Linguistic Patriotism",
+                            "The Last Lesson - Important Questions"
+                        ],
+                        "Treasure Chest - Poems": [
+                            "Haunted Houses - H.W. Longfellow (Summary)",
+                            "Haunted Houses - Theme of Memory and Spirit",
+                            "Haunted Houses - Literary Devices",
+                            "Haunted Houses - Important Questions",
+                            "The Glove and the Lions - Leigh Hunt (Summary)",
+                            "The Glove and the Lions - Theme of True Courage vs Show-off",
+                            "The Glove and the Lions - Character of De Lorge",
+                            "The Glove and the Lions - Important Questions",
+                            "When Great Trees Fall - Maya Angelou (Summary)",
+                            "When Great Trees Fall - Theme of Loss and Grief",
+                            "When Great Trees Fall - Extended Metaphor",
+                            "When Great Trees Fall - Important Questions",
+                            "A Considerable Speck - Robert Frost (Summary)",
+                            "A Considerable Speck - Theme of Respect for Life",
+                            "A Considerable Speck - Humour and Irony",
+                            "A Considerable Speck - Important Questions",
+                            "The Power of Music - Sukumar Ray (Summary)",
+                            "The Power of Music - Humour and Absurdity",
+                            "The Power of Music - Theme of Music's Influence",
+                            "The Power of Music - Important Questions",
+                            "Poetic Devices - Simile, Metaphor, Personification",
+                            "Poetic Devices - Alliteration, Assonance, Imagery",
+                            "Unseen Poem Analysis Techniques"
+                        ]
+                    }
+                },
+                hindi: {
+                    name: "Hindi (Second Language)",
+                    icon: "🇮🇳",
+                    color: "orange",
+                    chapters: {
+                        "गद्य खंड (Prose)": [
+                            "बात अठन्नी की - सुदर्शन",
+                            "नेता जी का चश्मा - स्वयं प्रकाश",
+                            "अपना अपना भाग्य - जैनेन्द्र कुमार",
+                            "महायज्ञ का पुरस्कार - यशपाल",
+                            "अमृता प्रीतम - जीवन परिचय",
+                            "पत्र लेखन",
+                            "गद्यांश व्याख्या",
+                            "चरित्र चित्रण"
+                        ],
+                        "पद्य खंड (Poetry)": [
+                            "साखी - कबीर",
+                            "मीरा के पद - मीराबाई",
+                            "गिरिधर की कुंडलियाँ - गिरिधर",
+                            "कर्मवीर - अयोध्या सिंह उपाध्याय 'हरिऔध'",
+                            "पद व्याख्या",
+                            "काव्य सौंदर्य",
+                            "अलंकार पहचान"
+                        ],
+                        "व्याकरण (Grammar)": [
+                            "संधि - स्वर संधि",
+                            "संधि - व्यंजन संधि", 
+                            "संधि - विसर्ग संधि",
+                            "समास - अव्ययीभाव समास",
+                            "समास - तत्पुरुष समास",
+                            "समास - कर्मधारय समास",
+                            "समास - द्विगु समास",
+                            "समास - द्वंद्व समास",
+                            "समास - बहुव्रीहि समास",
+                            "उपसर्ग",
+                            "प्रत्यय",
+                            "मुहावरे",
+                            "लोकोक्तियाँ",
+                            "पर्यायवाची शब्द",
+                            "विलोम शब्द",
+                            "वाक्य शुद्धि",
+                            "अनेक शब्दों के लिए एक शब्द"
+                        ],
+                        "रचना (Composition)": [
+                            "निबंध लेखन - सामाजिक विषय",
+                            "निबंध लेखन - विज्ञान और प्रौद्योगिकी",
+                            "निबंध लेखन - पर्यावरण",
+                            "पत्र लेखन - औपचारिक पत्र",
+                            "पत्र लेखन - अनौपचारिक पत्र",
+                            "अपठित गद्यांश",
+                            "कहानी लेखन",
+                            "संवाद लेखन"
+                        ]
+                    }
+                },
+                history: {
+                    name: "History & Civics",
+                    icon: "🏛️",
+                    color: "amber",
+                    chapters: {
+                        "The First War of Independence (1857)": [
+                            "Causes - Political Causes",
+                            "Causes - Economic Causes",
+                            "Causes - Social and Religious Causes",
+                            "Causes - Military Causes",
+                            "Causes - Immediate Cause (Greased Cartridges)",
+                            "Course of the Revolt",
+                            "Important Leaders - Nana Saheb, Tantia Tope",
+                            "Important Leaders - Rani Laxmibai, Begum Hazrat Mahal",
+                            "Causes of Failure",
+                            "Results and Significance"
+                        ],
+                        "Growth of Nationalism": [
+                            "Factors Leading to Nationalism",
+                            "Role of Western Education",
+                            "Role of Press and Literature",
+                            "Role of Social and Religious Reform Movements",
+                            "Economic Critique of British Rule",
+                            "Rediscovery of India's Past"
+                        ],
+                        "The Indian National Congress": [
+                            "Foundation of INC (1885)",
+                            "A.O. Hume and Early Leaders",
+                            "Aims and Objectives",
+                            "The Moderate Phase (1885-1905)",
+                            "Methods of Moderates",
+                            "Achievements and Limitations"
+                        ],
+                        "The Freedom Movement": [
+                            "Partition of Bengal (1905)",
+                            "Swadeshi and Boycott Movement",
+                            "Rise of Extremism",
+                            "Bal Gangadhar Tilak",
+                            "Surat Split (1907)",
+                            "Revolutionary Nationalism",
+                            "Lucknow Pact (1916)",
+                            "Home Rule Movement"
+                        ],
+                        "Mahatma Gandhi & Mass Movements": [
+                            "Early Life and South African Struggle",
+                            "Champaran Satyagraha (1917)",
+                            "Kheda Satyagraha (1918)",
+                            "Ahmedabad Mill Strike (1918)",
+                            "Rowlatt Act and Jallianwala Bagh",
+                            "Non-Cooperation Movement (1920-22)",
+                            "Civil Disobedience Movement (1930-34)",
+                            "Dandi March (Salt Satyagraha)",
+                            "Round Table Conferences",
+                            "Quit India Movement (1942)"
+                        ],
+                        "Subhas Chandra Bose & INA": [
+                            "Early Life and Career",
+                            "Differences with Gandhi",
+                            "Forward Bloc Formation",
+                            "Escape from India",
+                            "Indian National Army (INA)",
+                            "Azad Hind Government",
+                            "INA Trials"
+                        ],
+                        "Independence and Partition": [
+                            "Cabinet Mission (1946)",
+                            "Direct Action Day",
+                            "Mountbatten Plan",
+                            "Indian Independence Act 1947",
+                            "Partition and its Effects",
+                            "Integration of Princely States"
+                        ],
+                        "First World War": [
+                            "Causes - Nationalism and Imperialism",
+                            "Causes - Militarism",
+                            "Causes - System of Alliances",
+                            "Immediate Cause - Assassination of Archduke",
+                            "Course of the War",
+                            "Treaty of Versailles",
+                            "Effects of the War"
+                        ],
+                        "Rise of Dictatorships": [
+                            "Fascism in Italy - Causes",
+                            "Mussolini's Rise to Power",
+                            "Fascist Policies",
+                            "Nazism in Germany - Causes",
+                            "Hitler's Rise to Power",
+                            "Nazi Ideology and Policies",
+                            "Comparison of Fascism and Nazism"
+                        ],
+                        "Second World War": [
+                            "Causes of World War II",
+                            "German Aggression",
+                            "Course of the War in Europe",
+                            "War in the Pacific",
+                            "Atomic Bombings",
+                            "Results of the War"
+                        ],
+                        "United Nations Organization": [
+                            "Need for International Organization",
+                            "Formation and Charter",
+                            "Aims and Objectives",
+                            "General Assembly",
+                            "Security Council",
+                            "Secretariat",
+                            "International Court of Justice",
+                            "Economic and Social Council"
+                        ],
+                        "UN Agencies": [
+                            "UNESCO",
+                            "UNICEF",
+                            "WHO",
+                            "ILO",
+                            "FAO",
+                            "Role and Functions"
+                        ],
+                        "Non-Aligned Movement": [
+                            "Cold War Background",
+                            "Formation of NAM",
+                            "Bandung Conference",
+                            "Principles of NAM",
+                            "India's Role in NAM",
+                            "Relevance Today"
+                        ],
+                        "Civics - The Indian Constitution": [
+                            "Making of the Constitution",
+                            "Constituent Assembly",
+                            "Preamble - Analysis",
+                            "Salient Features",
+                            "Federal Structure",
+                            "Parliamentary System"
+                        ],
+                        "Civics - Fundamental Rights": [
+                            "Right to Equality",
+                            "Right to Freedom",
+                            "Right Against Exploitation",
+                            "Right to Freedom of Religion",
+                            "Cultural and Educational Rights",
+                            "Right to Constitutional Remedies"
+                        ],
+                        "Civics - Directive Principles & Duties": [
+                            "Nature of Directive Principles",
+                            "Classification of DPSPs",
+                            "Fundamental Duties",
+                            "Difference between Rights and Duties"
+                        ],
+                        "Civics - Union Legislature": [
+                            "Parliament - Structure",
+                            "Lok Sabha - Composition and Functions",
+                            "Rajya Sabha - Composition and Functions",
+                            "Law Making Process",
+                            "Types of Bills",
+                            "Budget and Money Bills"
+                        ],
+                        "Civics - Union Executive": [
+                            "President - Election and Powers",
+                            "Vice President",
+                            "Prime Minister - Powers and Functions",
+                            "Council of Ministers",
+                            "Cabinet System"
+                        ],
+                        "Civics - Judiciary": [
+                            "Supreme Court - Composition",
+                            "Supreme Court - Jurisdiction",
+                            "High Courts - Composition and Powers",
+                            "Subordinate Courts",
+                            "Judicial Review",
+                            "Independence of Judiciary"
+                        ]
+                    }
+                },
+                geography: {
+                    name: "Geography",
+                    icon: "🌍",
+                    color: "green",
+                    chapters: {
+                        "Map Work": [
+                            "India Political Map - States and Capitals",
+                            "India Political Map - Union Territories",
+                            "India Physical Map - Mountains",
+                            "India Physical Map - Rivers",
+                            "India Physical Map - Plateaus and Plains",
+                            "Locating Important Places",
+                            "Tropic of Cancer"
+                        ],
+                        "Location, Extent & Physical Features": [
+                            "Location of India",
+                            "Latitudinal and Longitudinal Extent",
+                            "India's Neighbors",
+                            "The Northern Mountains - Himalayas",
+                            "The Great Plains",
+                            "The Peninsular Plateau",
+                            "The Coastal Plains",
+                            "The Islands"
+                        ],
+                        "Climate of India": [
+                            "Factors Affecting Climate",
+                            "Monsoon - Meaning and Mechanism",
+                            "Southwest Monsoon",
+                            "Northeast Monsoon",
+                            "Seasons - Summer",
+                            "Seasons - Winter",
+                            "Seasons - Advancing Monsoon",
+                            "Seasons - Retreating Monsoon",
+                            "Distribution of Rainfall"
+                        ],
+                        "Soil Resources": [
+                            "Formation of Soil",
+                            "Alluvial Soil",
+                            "Black Soil",
+                            "Red Soil",
+                            "Laterite Soil",
+                            "Mountain Soil",
+                            "Desert Soil",
+                            "Soil Erosion - Causes",
+                            "Soil Conservation Methods"
+                        ],
+                        "Natural Vegetation": [
+                            "Factors Affecting Vegetation",
+                            "Tropical Evergreen Forests",
+                            "Tropical Deciduous Forests",
+                            "Tropical Desert Vegetation",
+                            "Mangrove Forests",
+                            "Mountain Vegetation",
+                            "Importance of Forests",
+                            "Deforestation and Conservation"
+                        ],
+                        "Water Resources": [
+                            "Sources of Water",
+                            "The Ganga River System",
+                            "The Brahmaputra River System",
+                            "The Indus River System",
+                            "Peninsular Rivers - West Flowing",
+                            "Peninsular Rivers - East Flowing",
+                            "Irrigation - Need and Methods",
+                            "Canal Irrigation",
+                            "Well and Tube Well Irrigation",
+                            "Tank Irrigation",
+                            "Multipurpose River Projects",
+                            "Water Conservation"
+                        ],
+                        "Mineral & Energy Resources": [
+                            "Classification of Minerals",
+                            "Iron Ore - Distribution",
+                            "Manganese",
+                            "Copper",
+                            "Bauxite",
+                            "Mica",
+                            "Coal - Types and Distribution",
+                            "Petroleum and Natural Gas",
+                            "Conventional Energy Sources",
+                            "Non-Conventional Energy - Solar",
+                            "Non-Conventional Energy - Wind",
+                            "Non-Conventional Energy - Nuclear",
+                            "Conservation of Minerals"
+                        ],
+                        "Agriculture": [
+                            "Importance of Agriculture",
+                            "Types of Farming",
+                            "Rice - Conditions and Distribution",
+                            "Wheat - Conditions and Distribution",
+                            "Millets - Jowar, Bajra, Ragi",
+                            "Pulses",
+                            "Tea - Conditions and Distribution",
+                            "Coffee - Conditions and Distribution",
+                            "Cotton - Conditions and Distribution",
+                            "Sugarcane - Conditions and Distribution",
+                            "Jute - Conditions and Distribution",
+                            "Oilseeds",
+                            "Rubber",
+                            "Green Revolution",
+                            "Agricultural Problems and Solutions"
+                        ],
+                        "Industries": [
+                            "Factors of Industrial Location",
+                            "Agro-Based Industries - Cotton Textile",
+                            "Agro-Based Industries - Jute Industry",
+                            "Agro-Based Industries - Sugar Industry",
+                            "Mineral-Based Industries - Iron and Steel",
+                            "Mineral-Based Industries - Petroleum Refining",
+                            "Mineral-Based Industries - Cement",
+                            "Information Technology Industry",
+                            "Industrial Regions of India"
+                        ],
+                        "Transport": [
+                            "Importance of Transport",
+                            "Roadways - Types and Development",
+                            "Golden Quadrilateral",
+                            "Railways - Development",
+                            "Railways - Important Routes",
+                            "Waterways - Inland",
+                            "Waterways - Sea Routes and Ports",
+                            "Airways - Domestic and International",
+                            "Pipelines"
+                        ],
+                        "Waste Management": [
+                            "Types of Waste",
+                            "Solid Waste Management",
+                            "Liquid Waste Management",
+                            "Biomedical Waste",
+                            "E-Waste",
+                            "Reduce, Reuse, Recycle",
+                            "Waste Segregation"
+                        ],
+                        "Topographical Maps": [
+                            "Introduction to Toposheets",
+                            "Conventional Signs and Symbols",
+                            "Scale and Distance",
+                            "Four and Six Figure Grid References",
+                            "Direction and Bearing",
+                            "Relief Features",
+                            "Drainage Patterns",
+                            "Settlements and Land Use",
+                            "Cross Section Drawing"
+                        ]
+                    }
+                },
+                mathematics: {
+                    name: "Mathematics",
+                    icon: "🔢",
+                    color: "purple",
+                    chapters: {
+                        "Commercial Mathematics": [
+                            "GST - Introduction and Types",
+                            "GST - Calculation Problems",
+                            "GST - Input Tax Credit",
+                            "Banking - Savings Account",
+                            "Banking - Recurring Deposits",
+                            "Banking - Simple Interest",
+                            "Banking - Compound Interest",
+                            "Shares and Dividends - Terminology",
+                            "Shares - Face Value, Market Value",
+                            "Shares - Dividend Calculation",
+                            "Shares - Return on Investment"
+                        ],
+                        "Algebra - Linear Inequations": [
+                            "Linear Inequations in One Variable",
+                            "Solving Inequations",
+                            "Graphical Representation",
+                            "Solution Set on Number Line"
+                        ],
+                        "Algebra - Quadratic Equations": [
+                            "Standard Form of Quadratic Equations",
+                            "Solution by Factorization",
+                            "Solution by Formula",
+                            "Nature of Roots (Discriminant)",
+                            "Word Problems"
+                        ],
+                        "Algebra - Ratio and Proportion": [
+                            "Ratio - Basics and Properties",
+                            "Proportion - Types",
+                            "Componendo and Dividendo",
+                            "Mean Proportional",
+                            "Continued Proportion"
+                        ],
+                        "Algebra - Factorization": [
+                            "Factor Theorem",
+                            "Remainder Theorem",
+                            "Factorization of Polynomials"
+                        ],
+                        "Algebra - Matrices": [
+                            "Introduction to Matrices",
+                            "Order of a Matrix",
+                            "Types of Matrices",
+                            "Addition and Subtraction",
+                            "Multiplication of Matrices",
+                            "Solving Equations using Matrices"
+                        ],
+                        "Algebra - AP and GP": [
+                            "Arithmetic Progression - nth Term",
+                            "AP - Sum of n Terms",
+                            "AP - Word Problems",
+                            "Geometric Progression - nth Term",
+                            "GP - Sum of n Terms",
+                            "GP - Word Problems"
+                        ],
+                        "Coordinate Geometry": [
+                            "Distance Formula",
+                            "Section Formula",
+                            "Midpoint Formula",
+                            "Centroid of a Triangle",
+                            "Equation of a Line - Slope Form",
+                            "Equation of a Line - Two Point Form",
+                            "Slope Intercept Form",
+                            "Parallel and Perpendicular Lines"
+                        ],
+                        "Geometry - Similarity": [
+                            "Similar Triangles - Introduction",
+                            "AA Similarity",
+                            "SAS Similarity",
+                            "SSS Similarity",
+                            "Basic Proportionality Theorem",
+                            "Areas of Similar Triangles"
+                        ],
+                        "Geometry - Locus": [
+                            "Definition and Examples",
+                            "Theorems on Locus",
+                            "Construction Problems"
+                        ],
+                        "Geometry - Circles": [
+                            "Chord Properties",
+                            "Arc and Chord Relationships",
+                            "Tangent to a Circle",
+                            "Tangent Properties",
+                            "Angle in Alternate Segment",
+                            "Cyclic Quadrilaterals",
+                            "Angle Properties of Circles"
+                        ],
+                        "Geometry - Constructions": [
+                            "Tangent to a Circle from External Point",
+                            "Circumscribed Circle",
+                            "Inscribed Circle",
+                            "Circumscribing and Inscribing Polygons"
+                        ],
+                        "Mensuration": [
+                            "Cylinder - Surface Area",
+                            "Cylinder - Volume",
+                            "Cone - Surface Area",
+                            "Cone - Volume",
+                            "Sphere - Surface Area",
+                            "Sphere - Volume",
+                            "Hemisphere",
+                            "Combined Solids",
+                            "Conversion Problems"
+                        ],
+                        "Trigonometry": [
+                            "Trigonometric Ratios",
+                            "Trigonometric Identities",
+                            "Proving Identities",
+                            "Heights and Distances",
+                            "Angle of Elevation",
+                            "Angle of Depression"
+                        ],
+                        "Statistics": [
+                            "Mean - Direct Method",
+                            "Mean - Short-cut Method",
+                            "Mean - Step-deviation Method",
+                            "Median - Grouped Data",
+                            "Mode - Grouped Data",
+                            "Histograms",
+                            "Ogive (Cumulative Frequency Curve)",
+                            "Finding Median from Ogive"
+                        ],
+                        "Probability": [
+                            "Basic Concepts",
+                            "Sample Space and Events",
+                            "Theoretical Probability",
+                            "Problems on Coins",
+                            "Problems on Dice",
+                            "Problems on Cards",
+                            "Complementary Events"
+                        ]
+                    }
+                }
+            },
+            
+            // Science stream specific
+            science: {
+                physics: {
+                    name: "Physics",
+                    icon: "⚡",
+                    color: "yellow",
+                    chapters: {
+                        "Force, Work, Power & Energy": [
+                            "Force - Definition and Types",
+                            "Newton's Laws of Motion",
+                            "Work - Definition and Formula",
+                            "Energy - Types (KE and PE)",
+                            "Work-Energy Theorem",
+                            "Power - Definition and Units",
+                            "Conservation of Energy",
+                            "Numerical Problems"
+                        ],
+                        "Machines": [
+                            "Simple Machines - Introduction",
+                            "Mechanical Advantage",
+                            "Velocity Ratio",
+                            "Efficiency",
+                            "Levers - Types and Examples",
+                            "Levers - Numerical Problems",
+                            "Pulleys - Types",
+                            "Pulleys - Single Fixed",
+                            "Pulleys - Single Movable",
+                            "Pulleys - Combination",
+                            "Pulleys - Numerical Problems"
+                        ],
+                        "Refraction of Light": [
+                            "Refraction - Laws",
+                            "Refractive Index",
+                            "Refraction through Glass Slab",
+                            "Critical Angle",
+                            "Total Internal Reflection",
+                            "Applications of TIR",
+                            "Lenses - Types",
+                            "Lens Terminology",
+                            "Lens Formula and Magnification",
+                            "Power of a Lens",
+                            "Numerical Problems on Lenses"
+                        ],
+                        "Refraction through Prism & Spectrum": [
+                            "Refraction through Prism",
+                            "Angle of Deviation",
+                            "Dispersion of Light",
+                            "Spectrum - Types",
+                            "Electromagnetic Spectrum",
+                            "Scattering of Light"
+                        ],
+                        "Sound": [
+                            "Nature and Propagation",
+                            "Characteristics - Pitch, Loudness, Quality",
+                            "Reflection of Sound",
+                            "Echo and Reverberation",
+                            "Ultrasound and Applications",
+                            "SONAR"
+                        ],
+                        "Current Electricity": [
+                            "Electric Current - Definition",
+                            "Ohm's Law",
+                            "Resistance and Factors",
+                            "Resistivity",
+                            "Resistors in Series",
+                            "Resistors in Parallel",
+                            "EMF and Terminal Voltage",
+                            "Internal Resistance",
+                            "Numerical Problems"
+                        ],
+                        "Electrical Power and Energy": [
+                            "Electrical Energy - Formula",
+                            "Electrical Power - Formula",
+                            "Commercial Unit (kWh)",
+                            "Calculation of Electricity Bills",
+                            "Household Circuits",
+                            "Safety Devices - Fuse, MCB",
+                            "Earthing"
+                        ],
+                        "Electromagnetism": [
+                            "Magnetic Field due to Current",
+                            "Magnetic Field of Solenoid",
+                            "Electromagnet and Applications",
+                            "Force on Current-Carrying Conductor",
+                            "Fleming's Left-Hand Rule",
+                            "Electric Motor - Principle",
+                            "DC Motor - Working",
+                            "Electromagnetic Induction",
+                            "Fleming's Right-Hand Rule",
+                            "AC Generator - Working",
+                            "DC Generator",
+                            "Transformer - Principle and Types"
+                        ],
+                        "Calorimetry": [
+                            "Heat and Temperature",
+                            "Specific Heat Capacity",
+                            "Principle of Calorimetry",
+                            "Numerical Problems",
+                            "Latent Heat of Fusion",
+                            "Latent Heat of Vaporization",
+                            "Change of State Problems"
+                        ],
+                        "Radioactivity & Nuclear Energy": [
+                            "Radioactivity - Discovery",
+                            "Types of Radiations (α, β, γ)",
+                            "Properties of Radiations",
+                            "Nuclear Fission",
+                            "Nuclear Fusion",
+                            "Nuclear Reactor",
+                            "Uses of Nuclear Energy",
+                            "Hazards of Radioactivity",
+                            "Safety Measures"
+                        ]
+                    }
+                },
+                chemistry: {
+                    name: "Chemistry",
+                    icon: "🧪",
+                    color: "pink",
+                    chapters: {
+                        "Periodic Table": [
+                            "Modern Periodic Law",
+                            "Long Form of Periodic Table",
+                            "Periods and Groups",
+                            "Periodic Properties - Atomic Size",
+                            "Periodic Properties - Ionization Potential",
+                            "Periodic Properties - Electron Affinity",
+                            "Periodic Properties - Electronegativity",
+                            "Metallic and Non-metallic Character",
+                            "Position of Elements (s, p, d, f blocks)"
+                        ],
+                        "Chemical Bonding": [
+                            "Electronic Theory of Valency",
+                            "Electrovalent Bond - Formation",
+                            "Electrovalent Compounds - Properties",
+                            "Covalent Bond - Formation",
+                            "Types of Covalent Bonds",
+                            "Covalent Compounds - Properties",
+                            "Polar and Non-polar Covalent Bonds",
+                            "Coordinate Bond",
+                            "Comparison of Bonds"
+                        ],
+                        "Study of Acids, Bases & Salts": [
+                            "Acids - Definition and Types",
+                            "Properties of Acids",
+                            "Bases and Alkalis",
+                            "Properties of Bases",
+                            "pH Scale",
+                            "Indicators",
+                            "Neutralization",
+                            "Salts - Types",
+                            "Normal, Acidic, Basic Salts"
+                        ],
+                        "Analytical Chemistry": [
+                            "Action of Dilute Acids on Salts",
+                            "Action of Concentrated Acids",
+                            "Action of Alkalis on Salts",
+                            "Identification of Anions",
+                            "Identification of Cations",
+                            "Dry Tests",
+                            "Wet Tests"
+                        ],
+                        "Mole Concept and Stoichiometry": [
+                            "Mole - Definition",
+                            "Avogadro's Number",
+                            "Molar Mass",
+                            "Molar Volume",
+                            "Percentage Composition",
+                            "Empirical Formula",
+                            "Molecular Formula",
+                            "Stoichiometric Calculations",
+                            "Limiting Reagent"
+                        ],
+                        "Electrolysis": [
+                            "Electrolytes and Non-electrolytes",
+                            "Strong and Weak Electrolytes",
+                            "Mechanism of Electrolysis",
+                            "Electrolysis of Water",
+                            "Electrolysis of Copper Sulphate",
+                            "Electroplating",
+                            "Applications of Electrolysis"
+                        ],
+                        "Metallurgy": [
+                            "Occurrence of Metals",
+                            "Ores and Minerals",
+                            "Extraction of Metals - Methods",
+                            "Concentration of Ore",
+                            "Reduction Methods",
+                            "Refining of Metals",
+                            "Extraction of Aluminium",
+                            "Extraction of Iron",
+                            "Alloys and Their Uses"
+                        ],
+                        "Study of Compounds - Hydrogen Chloride": [
+                            "Laboratory Preparation",
+                            "Properties of HCl Gas",
+                            "Hydrochloric Acid - Properties",
+                            "Tests for HCl",
+                            "Uses of HCl"
+                        ],
+                        "Study of Compounds - Ammonia": [
+                            "Laboratory Preparation",
+                            "Industrial Manufacture (Haber's Process)",
+                            "Properties of Ammonia",
+                            "Reaction with Acids",
+                            "Tests for Ammonia",
+                            "Uses of Ammonia"
+                        ],
+                        "Study of Compounds - Nitric Acid": [
+                            "Laboratory Preparation",
+                            "Industrial Manufacture (Ostwald's Process)",
+                            "Properties of Dilute HNO₃",
+                            "Properties of Concentrated HNO₃",
+                            "Uses of Nitric Acid"
+                        ],
+                        "Study of Compounds - Sulphuric Acid": [
+                            "Industrial Manufacture (Contact Process)",
+                            "Properties of Dilute H₂SO₄",
+                            "Properties of Concentrated H₂SO₄",
+                            "As a Dehydrating Agent",
+                            "Tests for Sulphuric Acid",
+                            "Uses of Sulphuric Acid"
+                        ],
+                        "Organic Chemistry": [
+                            "Introduction to Organic Chemistry",
+                            "Classification of Organic Compounds",
+                            "Homologous Series",
+                            "IUPAC Nomenclature",
+                            "Functional Groups",
+                            "Hydrocarbons - Alkanes",
+                            "Hydrocarbons - Alkenes",
+                            "Hydrocarbons - Alkynes",
+                            "Alcohols - Methanol and Ethanol",
+                            "Carboxylic Acids - Acetic Acid"
+                        ],
+                        "Practical Chemistry": [
+                            "Laboratory Safety",
+                            "Identification of Gases",
+                            "Salt Analysis - Dry Tests",
+                            "Salt Analysis - Wet Tests",
+                            "Titration Experiments",
+                            "Preparation of Salts"
+                        ]
+                    }
+                },
+                biology: {
+                    name: "Biology",
+                    icon: "🧬",
+                    color: "emerald",
+                    chapters: {
+                        "Cell Cycle and Cell Division": [
+                            "Cell Cycle - Interphase",
+                            "Cell Cycle - M Phase",
+                            "Mitosis - Stages",
+                            "Mitosis - Prophase",
+                            "Mitosis - Metaphase",
+                            "Mitosis - Anaphase",
+                            "Mitosis - Telophase",
+                            "Significance of Mitosis",
+                            "Meiosis - Introduction",
+                            "Meiosis I - Stages",
+                            "Meiosis II - Stages",
+                            "Significance of Meiosis",
+                            "Differences - Mitosis vs Meiosis"
+                        ],
+                        "Genetics": [
+                            "Introduction to Genetics",
+                            "Mendel's Experiments",
+                            "Law of Dominance",
+                            "Law of Segregation",
+                            "Law of Independent Assortment",
+                            "Monohybrid Cross",
+                            "Dihybrid Cross",
+                            "Genotype and Phenotype",
+                            "Homozygous and Heterozygous",
+                            "Incomplete Dominance",
+                            "Sex Determination in Humans",
+                            "Sex-linked Inheritance"
+                        ],
+                        "Human Body - Circulatory System": [
+                            "Blood - Composition",
+                            "Blood - RBC, WBC, Platelets",
+                            "Blood Groups (ABO and Rh)",
+                            "Blood Transfusion",
+                            "Heart - Structure",
+                            "Heart - Working",
+                            "Cardiac Cycle",
+                            "Blood Vessels - Arteries, Veins, Capillaries",
+                            "Blood Pressure",
+                            "Lymphatic System"
+                        ],
+                        "Human Body - Excretory System": [
+                            "Excretion - Need and Types",
+                            "Urinary System - Structure",
+                            "Kidney - Structure",
+                            "Nephron - Structure",
+                            "Urine Formation",
+                            "Glomerular Filtration",
+                            "Tubular Reabsorption",
+                            "Tubular Secretion",
+                            "Composition of Urine",
+                            "Dialysis and Kidney Transplant"
+                        ],
+                        "Human Body - Nervous System": [
+                            "Nervous System - Overview",
+                            "Neuron - Structure",
+                            "Types of Neurons",
+                            "Nerve Impulse Transmission",
+                            "Synapse",
+                            "Central Nervous System",
+                            "Brain - Structure and Functions",
+                            "Spinal Cord",
+                            "Reflex Action",
+                            "Reflex Arc",
+                            "Peripheral Nervous System",
+                            "Autonomic Nervous System"
+                        ],
+                        "Human Body - Endocrine System": [
+                            "Endocrine Glands - Introduction",
+                            "Hormones - Definition",
+                            "Pituitary Gland",
+                            "Thyroid Gland",
+                            "Parathyroid Gland",
+                            "Adrenal Glands",
+                            "Pancreas - Islets of Langerhans",
+                            "Gonads",
+                            "Hormonal Disorders",
+                            "Feedback Mechanism"
+                        ],
+                        "Human Body - Reproductive System": [
+                            "Male Reproductive System",
+                            "Female Reproductive System",
+                            "Gametogenesis",
+                            "Menstrual Cycle",
+                            "Fertilization",
+                            "Implantation",
+                            "Pregnancy and Placenta",
+                            "Birth Control Methods"
+                        ],
+                        "Human Body - Sense Organs": [
+                            "Eye - Structure",
+                            "Eye - Working",
+                            "Defects of Vision",
+                            "Ear - Structure",
+                            "Ear - Mechanism of Hearing",
+                            "Balance and Equilibrium"
+                        ],
+                        "Plant Physiology - Photosynthesis": [
+                            "Introduction to Photosynthesis",
+                            "Site of Photosynthesis",
+                            "Light Reaction",
+                            "Dark Reaction (Calvin Cycle)",
+                            "Factors Affecting Photosynthesis",
+                            "Experiments on Photosynthesis"
+                        ],
+                        "Plant Physiology - Transpiration": [
+                            "Introduction to Transpiration",
+                            "Types of Transpiration",
+                            "Factors Affecting Transpiration",
+                            "Significance of Transpiration",
+                            "Experiment - Ganong's Potometer"
+                        ],
+                        "Ecology": [
+                            "Ecosystem - Components",
+                            "Food Chain and Food Web",
+                            "Energy Flow",
+                            "Biogeochemical Cycles",
+                            "Carbon Cycle",
+                            "Nitrogen Cycle",
+                            "Water Cycle"
+                        ],
+                        "Pollution": [
+                            "Air Pollution - Causes and Effects",
+                            "Water Pollution - Causes and Effects",
+                            "Soil Pollution",
+                            "Noise Pollution",
+                            "Global Warming",
+                            "Ozone Depletion",
+                            "Acid Rain",
+                            "Pollution Control Measures"
+                        ],
+                        "Health and Hygiene": [
+                            "Personal Hygiene",
+                            "Community Health",
+                            "Communicable Diseases",
+                            "Non-communicable Diseases",
+                            "AIDS - Causes and Prevention",
+                            "Drug Abuse",
+                            "Effects of Alcohol and Tobacco",
+                            "First Aid Basics"
+                        ]
+                    }
+                }
+            },
+            
+            // Commerce stream specific
+            commerce: {
+                commercial: {
+                    name: "Commercial Studies",
+                    icon: "💼",
+                    color: "teal",
+                    chapters: {
+                        "Introduction to Commerce": [
+                            "Commerce - Definition and Scope",
+                            "Trade - Internal and External",
+                            "Auxiliaries to Trade",
+                            "Business, Profession, Employment"
+                        ],
+                        "Trade": [
+                            "Wholesale Trade",
+                            "Retail Trade",
+                            "Types of Retailers",
+                            "Chain Stores",
+                            "Departmental Stores",
+                            "Supermarkets",
+                            "Cooperative Stores",
+                            "International Trade - Import and Export"
+                        ],
+                        "E-Commerce": [
+                            "Introduction to E-Commerce",
+                            "Types of E-Commerce",
+                            "Advantages and Disadvantages",
+                            "Online Shopping",
+                            "Digital Payment Methods"
+                        ],
+                        "Banking": [
+                            "Types of Banks",
+                            "Functions of Commercial Banks",
+                            "Types of Bank Accounts",
+                            "Cheques - Types",
+                            "Bank Draft and NEFT/RTGS",
+                            "Mobile Banking",
+                            "ATM and Debit/Credit Cards"
+                        ],
+                        "Insurance": [
+                            "Principles of Insurance",
+                            "Life Insurance",
+                            "Fire Insurance",
+                            "Marine Insurance",
+                            "Health Insurance",
+                            "Motor Insurance"
+                        ],
+                        "Transport": [
+                            "Modes of Transport",
+                            "Road Transport",
+                            "Rail Transport",
+                            "Water Transport",
+                            "Air Transport",
+                            "Pipeline Transport",
+                            "Factors in Selection"
+                        ],
+                        "Communication": [
+                            "Business Communication",
+                            "Means of Communication",
+                            "Postal Services",
+                            "Telecommunication",
+                            "Internet and Email"
+                        ],
+                        "Advertising": [
+                            "Meaning and Objectives",
+                            "Types of Advertising",
+                            "Advertising Media",
+                            "Sales Promotion",
+                            "Ethics in Advertising"
+                        ],
+                        "Consumer Protection": [
+                            "Consumer Rights",
+                            "Consumer Responsibilities",
+                            "Consumer Protection Act",
+                            "Consumer Courts",
+                            "Filing a Complaint"
+                        ],
+                        "Entrepreneurship": [
+                            "Meaning and Importance",
+                            "Qualities of an Entrepreneur",
+                            "Types of Entrepreneurs",
+                            "Startup Ecosystem",
+                            "Government Schemes"
+                        ]
+                    }
+                },
+                economics: {
+                    name: "Economics",
+                    icon: "📈",
+                    color: "indigo",
+                    chapters: {
+                        "Introduction to Economics": [
+                            "Definition and Scope",
+                            "Microeconomics and Macroeconomics",
+                            "Basic Economic Problems",
+                            "Economic Systems"
+                        ],
+                        "Demand and Supply": [
+                            "Meaning of Demand",
+                            "Law of Demand",
+                            "Demand Schedule and Curve",
+                            "Determinants of Demand",
+                            "Elasticity of Demand",
+                            "Meaning of Supply",
+                            "Law of Supply",
+                            "Supply Schedule and Curve",
+                            "Determinants of Supply",
+                            "Market Equilibrium"
+                        ],
+                        "Theory of Consumer Behavior": [
+                            "Utility - Total and Marginal",
+                            "Law of Diminishing Marginal Utility",
+                            "Consumer Surplus",
+                            "Indifference Curve Analysis"
+                        ],
+                        "Theory of Production": [
+                            "Factors of Production",
+                            "Production Function",
+                            "Law of Variable Proportions",
+                            "Returns to Scale"
+                        ],
+                        "Cost and Revenue": [
+                            "Types of Costs",
+                            "Cost Curves",
+                            "Revenue - Total, Average, Marginal",
+                            "Break-even Analysis"
+                        ],
+                        "Market Structures": [
+                            "Perfect Competition",
+                            "Monopoly",
+                            "Monopolistic Competition",
+                            "Oligopoly"
+                        ],
+                        "Money and Banking": [
+                            "Evolution of Money",
+                            "Functions of Money",
+                            "Types of Money",
+                            "Central Bank - RBI",
+                            "Commercial Banks",
+                            "Credit Creation"
+                        ],
+                        "National Income": [
+                            "Concept of National Income",
+                            "Methods of Measurement",
+                            "GDP and GNP",
+                            "NDP and NNP",
+                            "Per Capita Income"
+                        ],
+                        "Government Budget": [
+                            "Meaning and Objectives",
+                            "Types of Budget",
+                            "Revenue and Capital Budget",
+                            "Budget Deficit",
+                            "Fiscal Policy"
+                        ],
+                        "Indian Economy": [
+                            "Overview of Indian Economy",
+                            "Five Year Plans",
+                            "NITI Aayog",
+                            "Sectors of Economy",
+                            "Economic Reforms (LPG)",
+                            "Poverty and Unemployment",
+                            "Rural Development",
+                            "Sustainable Development"
+                        ]
+                    }
+                }
+            },
+            
+            // Optional subjects
+            optional: {
+                computer: {
+                    name: "Computer Applications",
+                    icon: "💻",
+                    color: "cyan",
+                    chapters: {
+                        "Introduction to OOP": [
+                            "Object-Oriented Programming Concepts",
+                            "Class and Object",
+                            "Encapsulation",
+                            "Abstraction",
+                            "Polymorphism",
+                            "Inheritance (Basic Concept)"
+                        ],
+                        "Elementary Concepts in Java": [
+                            "Features of Java",
+                            "JVM and Bytecode",
+                            "BlueJ Environment",
+                            "Tokens - Keywords",
+                            "Tokens - Identifiers",
+                            "Tokens - Literals",
+                            "Tokens - Operators",
+                            "Tokens - Separators"
+                        ],
+                        "Values and Data Types": [
+                            "Primitive Data Types",
+                            "byte, short, int, long",
+                            "float, double",
+                            "char, boolean",
+                            "Non-Primitive Types",
+                            "Type Conversion and Casting"
+                        ],
+                        "Operators in Java": [
+                            "Arithmetic Operators",
+                            "Relational Operators",
+                            "Logical Operators",
+                            "Assignment Operators",
+                            "Unary Operators",
+                            "Ternary Operator",
+                            "Increment and Decrement",
+                            "Operator Precedence"
+                        ],
+                        "Input in Java": [
+                            "Scanner Class",
+                            "next() and nextLine()",
+                            "nextInt(), nextFloat(), nextDouble()",
+                            "BufferedReader Class"
+                        ],
+                        "Mathematical Library Methods": [
+                            "Math.pow()",
+                            "Math.sqrt()",
+                            "Math.cbrt()",
+                            "Math.abs()",
+                            "Math.max() and Math.min()",
+                            "Math.ceil() and Math.floor()",
+                            "Math.round()",
+                            "Math.random()"
+                        ],
+                        "Conditional Constructs": [
+                            "if Statement",
+                            "if-else Statement",
+                            "if-else-if Ladder",
+                            "Nested if-else",
+                            "switch-case Statement",
+                            "Programs using Conditionals"
+                        ],
+                        "Iterative Constructs": [
+                            "for Loop",
+                            "while Loop",
+                            "do-while Loop",
+                            "Nested Loops",
+                            "Pattern Programs - Stars",
+                            "Pattern Programs - Numbers",
+                            "Pattern Programs - Alphabets",
+                            "break and continue"
+                        ],
+                        "Functions/Methods": [
+                            "Defining a Method",
+                            "Method Signature",
+                            "Parameters and Arguments",
+                            "Return Type and return Statement",
+                            "Pure and Impure Functions",
+                            "Static and Non-static Methods",
+                            "Call by Value"
+                        ],
+                        "Method Overloading": [
+                            "Concept of Overloading",
+                            "Overloading by Number of Parameters",
+                            "Overloading by Data Types",
+                            "Programs on Overloading"
+                        ],
+                        "Arrays - Single Dimensional": [
+                            "Introduction to Arrays",
+                            "Declaration and Initialization",
+                            "Accessing Array Elements",
+                            "Array Input and Output",
+                            "Linear Search",
+                            "Binary Search",
+                            "Sorting - Bubble Sort",
+                            "Sorting - Selection Sort"
+                        ],
+                        "Arrays - Double Dimensional": [
+                            "2D Array Declaration",
+                            "Initialization of 2D Arrays",
+                            "Input and Output",
+                            "Matrix Addition",
+                            "Matrix Multiplication",
+                            "Transpose of Matrix",
+                            "Row Sum and Column Sum"
+                        ],
+                        "String Handling - String Class": [
+                            "String - Introduction",
+                            "String Methods - length()",
+                            "String Methods - charAt()",
+                            "String Methods - substring()",
+                            "String Methods - indexOf()",
+                            "String Methods - lastIndexOf()",
+                            "String Methods - equals() and equalsIgnoreCase()",
+                            "String Methods - compareTo()",
+                            "String Methods - toUpperCase() and toLowerCase()",
+                            "String Methods - trim()",
+                            "String Methods - replace()",
+                            "String Methods - concat()",
+                            "String Programs - Palindrome",
+                            "String Programs - Vowel Count",
+                            "String Programs - Word Count"
+                        ],
+                        "String Handling - StringBuffer Class": [
+                            "StringBuffer - Introduction",
+                            "append()",
+                            "insert()",
+                            "delete() and deleteCharAt()",
+                            "reverse()",
+                            "setCharAt()",
+                            "String vs StringBuffer"
+                        ],
+                        "Practical Programs": [
+                            "Menu Driven Programs",
+                            "Number Programs (Prime, Factorial, Fibonacci)",
+                            "Series Programs",
+                            "Special Numbers (Armstrong, Palindrome, etc.)",
+                            "String Manipulation Programs",
+                            "Array Programs",
+                            "Matrix Programs"
+                        ]
+                    }
+                },
+                pe: {
+                    name: "Physical Education",
+                    icon: "🏃",
+                    color: "orange",
+                    chapters: {
+                        "Health Education": [
+                            "Meaning of Health",
+                            "Dimensions of Health",
+                            "Factors Affecting Health",
+                            "Importance of Health Education",
+                            "Communicable Diseases",
+                            "Non-Communicable Diseases",
+                            "Lifestyle Disorders"
+                        ],
+                        "First Aid": [
+                            "Meaning and Importance",
+                            "First Aid Kit",
+                            "Treatment of Cuts and Wounds",
+                            "Treatment of Burns",
+                            "Treatment of Fractures",
+                            "Treatment of Sprains",
+                            "CPR Basics",
+                            "Drowning and Electric Shock"
+                        ],
+                        "Physical Fitness": [
+                            "Components of Physical Fitness",
+                            "Strength",
+                            "Speed",
+                            "Endurance",
+                            "Flexibility",
+                            "Agility",
+                            "Balance and Coordination",
+                            "Fitness Tests"
+                        ],
+                        "Yoga and Meditation": [
+                            "Introduction to Yoga",
+                            "Importance of Yoga",
+                            "Asanas - Standing",
+                            "Asanas - Sitting",
+                            "Asanas - Prone",
+                            "Asanas - Supine",
+                            "Pranayama",
+                            "Meditation Techniques"
+                        ],
+                        "Athletics": [
+                            "Track Events - Sprints",
+                            "Track Events - Middle Distance",
+                            "Track Events - Relay",
+                            "Field Events - Long Jump",
+                            "Field Events - High Jump",
+                            "Field Events - Shot Put",
+                            "Field Events - Discus Throw"
+                        ],
+                        "Team Games": [
+                            "Cricket - Rules and Skills",
+                            "Football - Rules and Skills",
+                            "Hockey - Rules and Skills",
+                            "Basketball - Rules and Skills",
+                            "Volleyball - Rules and Skills",
+                            "Kabaddi - Rules and Skills",
+                            "Kho-Kho - Rules and Skills"
+                        ],
+                        "Individual Games": [
+                            "Badminton - Rules and Skills",
+                            "Table Tennis - Rules and Skills",
+                            "Tennis - Rules and Skills",
+                            "Swimming - Basics",
+                            "Gymnastics - Basics"
+                        ],
+                        "Nutrition": [
+                            "Balanced Diet",
+                            "Nutrients - Carbohydrates",
+                            "Nutrients - Proteins",
+                            "Nutrients - Fats",
+                            "Vitamins and Minerals",
+                            "Water and Fiber",
+                            "Diet for Sports Persons"
+                        ],
+                        "Posture": [
+                            "Good Posture - Importance",
+                            "Common Postural Deformities",
+                            "Kyphosis, Lordosis, Scoliosis",
+                            "Flat Foot, Knock Knees",
+                            "Corrective Exercises"
+                        ],
+                        "Practical Assessment": [
+                            "Fitness Test Performance",
+                            "Game Skills",
+                            "Athletics Performance",
+                            "Yoga Demonstration"
+                        ]
+                    }
+                },
+                arts: {
+                    name: "Art / Music",
+                    icon: "🎨",
+                    color: "pink",
+                    chapters: {
+                        "Elements of Art": [
+                            "Line - Types and Uses",
+                            "Shape and Form",
+                            "Color - Primary, Secondary, Tertiary",
+                            "Color Wheel",
+                            "Value and Tone",
+                            "Texture",
+                            "Space and Perspective"
+                        ],
+                        "Drawing": [
+                            "Still Life Drawing",
+                            "Nature Drawing - Plants",
+                            "Nature Drawing - Animals",
+                            "Human Figure - Proportions",
+                            "Human Figure - Poses",
+                            "Object Drawing",
+                            "Landscape Drawing",
+                            "Shading Techniques"
+                        ],
+                        "Painting": [
+                            "Watercolor Techniques",
+                            "Poster Color Techniques",
+                            "Color Mixing",
+                            "Wash Techniques",
+                            "Composition in Painting",
+                            "Landscape Painting",
+                            "Portrait Basics"
+                        ],
+                        "History of Indian Art": [
+                            "Prehistoric Art",
+                            "Indus Valley Art",
+                            "Buddhist Art",
+                            "Mughal Paintings",
+                            "Rajasthani Paintings",
+                            "Bengal School",
+                            "Modern Indian Artists"
+                        ],
+                        "History of Western Art": [
+                            "Renaissance Art",
+                            "Impressionism",
+                            "Post-Impressionism",
+                            "Cubism",
+                            "Surrealism",
+                            "Pop Art",
+                            "Famous Western Artists"
+                        ],
+                        "Music Theory": [
+                            "Notes and Scales",
+                            "Swaras in Indian Music",
+                            "Ragas - Introduction",
+                            "Talas - Introduction",
+                            "Western Notation",
+                            "Rhythm and Beat",
+                            "Melody and Harmony"
+                        ],
+                        "Indian Classical Music": [
+                            "Hindustani Music",
+                            "Carnatic Music",
+                            "Types of Ragas",
+                            "Types of Talas",
+                            "Musical Instruments - String",
+                            "Musical Instruments - Wind",
+                            "Musical Instruments - Percussion"
+                        ],
+                        "Practical Work": [
+                            "Portfolio Preparation",
+                            "Composition Creation",
+                            "Model Making",
+                            "Craft Work",
+                            "Vocal Practice",
+                            "Instrument Practice",
+                            "Performance Skills"
+                        ]
+                    }
+                }
+            }
+        };
+        
+        // ============ APP STATE ============
+        let currentUser = null;
+        let users = {};
+        
+        // ============ INITIALIZATION ============
+        function init() {
+            createParticles();
+            loadUsers();
+            checkLoggedInUser();
+        }
+        
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                particle.style.width = Math.random() * 10 + 5 + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+        
+        function loadUsers() {
+            const saved = localStorage.getItem('icse_users');
+            if (saved) {
+                users = JSON.parse(saved);
+            }
+        }
+        
+        function saveUsers() {
+            localStorage.setItem('icse_users', JSON.stringify(users));
+        }
+        
+        function checkLoggedInUser() {
+            const loggedIn = localStorage.getItem('icse_current_user');
+            if (loggedIn && users[loggedIn]) {
+                currentUser = users[loggedIn];
+                if (currentUser.setupComplete) {
+                    goToDashboard();
+                } else if (currentUser.stream) {
+                    if (currentUser.optional) {
+                        showScreen('exam');
+                    } else {
+                        showScreen('optional');
+                    }
+                } else {
+                    showScreen('stream');
+                    document.getElementById('welcomeName').textContent = currentUser.name;
+                }
+            }
+        }
+        
+        // ============ AUTH FUNCTIONS ============
+        function switchAuthTab(tab) {
+            document.getElementById('loginTab').classList.toggle('active', tab === 'login');
+            document.getElementById('signupTab').classList.toggle('active', tab === 'signup');
+            document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
+            hideErrors();
+        }
+        
+        function hideErrors() {
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('signupError').classList.add('hidden');
+            document.getElementById('signupSuccess').classList.add('hidden');
+        }
+        
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                icon.textContent = '👁️';
+            }
+        }
+        
+        function handleSignup() {
+            const name = document.getElementById('signupName').value.trim();
+            const username = document.getElementById('signupUsername').value.trim().toLowerCase();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            
+            hideErrors();
+            
+            if (!name || !username || !password || !confirmPassword) {
+                showError('signupError', 'Please fill in all fields');
+                return;
+            }
+            
+            if (username.length < 3) {
+                showError('signupError', 'Username must be at least 3 characters');
+                return;
+            }
+            
+            if (password.length < 4) {
+                showError('signupError', 'Password must be at least 4 characters');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('signupError', 'Passwords do not match');
+                return;
+            }
+            
+            if (users[username]) {
+                showError('signupError', 'Username already exists');
+                return;
+            }
+            
+            // Create new user
+            users[username] = {
+                name: name,
+                username: username,
+                password: password,
+                stream: '',
+                optional: '',
+                examDate: '',
+                progress: {},
+                setupComplete: false
+            };
+            
+            saveUsers();
+            
+            document.getElementById('signupSuccess').textContent = '✅ Account created! Please login.';
+            document.getElementById('signupSuccess').classList.remove('hidden');
+            
+            // Clear form
+            document.getElementById('signupName').value = '';
+            document.getElementById('signupUsername').value = '';
+            document.getElementById('signupPassword').value = '';
+            document.getElementById('signupConfirmPassword').value = '';
+            
+            // Switch to login after 2 seconds
+            setTimeout(() => {
+                switchAuthTab('login');
+                document.getElementById('loginUsername').value = username;
+            }, 1500);
+        }
+        
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            
+            hideErrors();
+            
+            if (!username || !password) {
+                showError('loginError', 'Please enter username and password');
+                return;
+            }
+            
+            if (!users[username]) {
+                showError('loginError', 'User not found. Please sign up first.');
+                return;
+            }
+            
+            if (users[username].password !== password) {
+                showError('loginError', 'Incorrect password');
+                return;
+            }
+            
+            // Login successful
+            currentUser = users[username];
+            localStorage.setItem('icse_current_user', username);
+            
+            if (currentUser.setupComplete) {
+                goToDashboard();
+            } else {
+                showScreen('stream');
+                document.getElementById('welcomeName').textContent = currentUser.name;
+            }
+        }
+        
+        function showError(elementId, message) {
+            const el = document.getElementById(elementId);
+            el.textContent = '❌ ' + message;
+            el.classList.remove('hidden');
+            el.parentElement.classList.add('animate-shake');
+            setTimeout(() => el.parentElement.classList.remove('animate-shake'), 500);
+        }
+        
+        function logout() {
+            localStorage.removeItem('icse_current_user');
+            currentUser = null;
+            showScreen('auth');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+        
+        // ============ NAVIGATION ============
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+        
+        function selectStream(stream) {
+            currentUser.stream = stream;
+            saveCurrentUser();
+            showScreen('optional');
+        }
+        
+        function selectOptional(optional) {
+            currentUser.optional = optional;
+            saveCurrentUser();
+            showScreen('exam');
+            
+            // Set default date
+            const now = new Date();
+            let year = now.getMonth() >= 2 ? now.getFullYear() + 1 : now.getFullYear();
+            document.getElementById('examDate').value = `${year}-02-20`;
+        }
+        
+        function setExamDate() {
+            const date = document.getElementById('examDate').value;
+            if (!date) {
+                document.getElementById('examDate').classList.add('animate-shake');
+                setTimeout(() => document.getElementById('examDate').classList.remove('animate-shake'), 500);
+                return;
+            }
+            currentUser.examDate = date;
+            currentUser.setupComplete = true;
+            saveCurrentUser();
+            goToDashboard();
+        }
+        
+        function saveCurrentUser() {
+            users[currentUser.username] = currentUser;
+            saveUsers();
+        }
+        
+        function goToDashboard() {
+            document.getElementById('displayName').textContent = currentUser.name;
+            document.getElementById('streamBadge').textContent = 'Stream: ' + (currentUser.stream === 'science' ? '🔬 Science' : '📊 Commerce');
+            document.getElementById('optionalBadge').textContent = 'Optional: ' + getOptionalName();
+            document.getElementById('examDateBadge').textContent = 'Exam: ' + new Date(currentUser.examDate).toLocaleDateString();
+            
+            showScreen('dashboard');
+            renderSubjects();
+            startTimer();
+            updateOverallProgress();
+        }
+        
+        function getOptionalName() {
+            const names = { computer: '💻 Computer', pe: '🏃 PE', arts: '🎨 Arts' };
+            return names[currentUser.optional] || currentUser.optional;
+        }
+        
+        // ============ TIMER ============
+        function startTimer() {
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+            const examDate = new Date(currentUser.examDate + 'T00:00:00');
+            const now = new Date();
+            const diff = examDate - now;
+            
+            if (diff <= 0) {
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+        
+        // ============ RENDER SUBJECTS ============
+        function getSubjectsForUser() {
+            const subjects = [];
+            
+            // Add common subjects
+            Object.keys(syllabusData.common).forEach(key => {
+                subjects.push({ key: 'common.' + key, ...syllabusData.common[key] });
+            });
+            
+            // Add stream-specific subjects
+            const streamData = syllabusData[currentUser.stream];
+            if (streamData) {
+                Object.keys(streamData).forEach(key => {
+                    subjects.push({ key: currentUser.stream + '.' + key, ...streamData[key] });
+                });
+            }
+            
+            // Add optional subject
+            const optionalData = syllabusData.optional[currentUser.optional];
+            if (optionalData) {
+                subjects.push({ key: 'optional.' + currentUser.optional, ...optionalData });
+            }
+            
+            return subjects;
+        }
+        
+        function getTotalTopics(subject) {
+            let total = 0;
+            Object.values(subject.chapters).forEach(topics => {
+                total += topics.length;
+            });
+            return total;
+        }
+        
+        function getCompletedTopics(subjectKey) {
+            const progress = currentUser.progress[subjectKey] || {};
+            let completed = 0;
+            Object.values(progress).forEach(topics => {
+                completed += topics.length;
+            });
+            return completed;
+        }
+        
+        function calculateSubjectProgress(subject) {
+            const total = getTotalTopics(subject);
+            const completed = getCompletedTopics(subject.key);
+            return total > 0 ? Math.round((completed / total) * 100) : 0;
+        }
+        
+        function renderSubjects() {
+            const grid = document.getElementById('subjectsGrid');
+            grid.innerHTML = '';
+            
+            const subjects = getSubjectsForUser();
+            let delay = 0;
+            
+            subjects.forEach((subject) => {
+                const progress = calculateSubjectProgress(subject);
+                const total = getTotalTopics(subject);
+                const completed = getCompletedTopics(subject.key);
+                
+                const card = document.createElement('div');
+                card.className = `subject-card glass rounded-2xl p-6 cursor-pointer animate-bounce-in`;
+                card.style.animationDelay = `${delay}s`;
+                delay += 0.1;
+                
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-4xl">${subject.icon}</span>
+                        <span class="text-2xl font-bold ${progress === 100 ? 'text-green-400' : 'text-blue-400'}">${progress}%</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">${subject.name}</h3>
+                    <div class="h-3 bg-slate-700 rounded-full overflow-hidden mb-2">
+                        <div class="progress-bar h-full bg-gradient-to-r ${progress === 100 ? 'from-green-400 to-emerald-500' : 'from-blue-400 to-purple-600'} rounded-full" style="width: ${progress}%"></div>
+                    </div>
+                    <p class="text-sm text-blue-300">${completed} / ${total} topics</p>
+                    <p class="text-xs text-blue-400 mt-1">${Object.keys(subject.chapters).length} chapters</p>
+                `;
+                
+                card.onclick = () => openSubjectModal(subject);
+                grid.appendChild(card);
+            });
+        }
+        
+        // ============ MODAL ============
+        function openSubjectModal(subject) {
+            document.getElementById('modalTitle').innerHTML = `${subject.icon} ${subject.name}`;
+            
+            const total = getTotalTopics(subject);
+            const completed = getCompletedTopics(subject.key);
+            document.getElementById('modalProgress').textContent = `${completed} / ${total} topics completed (${Math.round((completed/total)*100)}%)`;
+            
+            const content = document.getElementById('modalContent');
+            const progress = currentUser.progress[subject.key] || {};
+            
+            let html = '';
+            
+            Object.entries(subject.chapters).forEach(([chapterName, topics], chapterIndex) => {
+                const chapterProgress = progress[chapterName] || [];
+                const chapterComplete = chapterProgress.length === topics.length;
+                
+                html += `
+                    <div class="mb-6 chapter-group pl-4 animate-fadeIn" style="animation-delay: ${chapterIndex * 0.1}s">
+                        <div class="flex items-center justify-between mb-3 cursor-pointer" onclick="toggleChapter(this)">
+                            <h3 class="text-lg font-bold text-yellow-400 flex items-center gap-2">
+                                <span class="transform transition-transform">▶</span>
+                                ${chapterName}
+                                ${chapterComplete ? '<span class="text-green-400 text-sm">✓ Complete</span>' : ''}
+                            </h3>
+                            <span class="text-sm text-blue-300">${chapterProgress.length}/${topics.length}</span>
+                        </div>
+                        <div class="chapter-content space-y-2">
+                            ${topics.map((topic, index) => {
+                                const isCompleted = chapterProgress.includes(index);
+                                return `
+                                    <label class="topic-item flex items-center gap-4 p-3 rounded-xl cursor-pointer ${isCompleted ? 'bg-green-500/20' : 'hover:bg-blue-500/10'}">
+                                        <input type="checkbox" 
+                                               class="checkbox-fancy" 
+                                               ${isCompleted ? 'checked' : ''} 
+                                               onchange="toggleTopic('${subject.key}', '${chapterName.replace(/'/g, "\\'")}', ${index}, this.checked)">
+                                        <span class="flex-1 ${isCompleted ? 'line-through text-green-300' : ''}">${topic}</span>
+                                        ${isCompleted ? '<span class="text-green-400">✓</span>' : ''}
+                                    </label>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            content.innerHTML = html;
+            document.getElementById('subjectModal').classList.remove('hidden');
+            document.getElementById('subjectModal').classList.add('flex');
+        }
+        
+        function toggleChapter(header) {
+            const arrow = header.querySelector('span');
+            const content = header.nextElementSibling;
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                arrow.style.transform = 'rotate(90deg)';
+            } else {
+                content.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('subjectModal').classList.add('hidden');
+            document.getElementById('subjectModal').classList.remove('flex');
+            renderSubjects();
+            updateOverallProgress();
+        }
+        
+        function toggleTopic(subjectKey, chapterName, topicIndex, isChecked) {
+            if (!currentUser.progress[subjectKey]) {
+                currentUser.progress[subjectKey] = {};
+            }
+            if (!currentUser.progress[subjectKey][chapterName]) {
+                currentUser.progress[subjectKey][chapterName] = [];
+            }
+            
+            if (isChecked) {
+                if (!currentUser.progress[subjectKey][chapterName].includes(topicIndex)) {
+                    currentUser.progress[subjectKey][chapterName].push(topicIndex);
+                    celebrateCompletion();
+                }
+            } else {
+                currentUser.progress[subjectKey][chapterName] = 
+                    currentUser.progress[subjectKey][chapterName].filter(i => i !== topicIndex);
+            }
+            
+            saveCurrentUser();
+            
+            // Update modal progress
+            const subjects = getSubjectsForUser();
+            const subject = subjects.find(s => s.key === subjectKey);
+            if (subject) {
+                const total = getTotalTopics(subject);
+                const completed = getCompletedTopics(subject.key);
+                document.getElementById('modalProgress').textContent = 
+                    `${completed} / ${total} topics completed (${Math.round((completed/total)*100)}%)`;
+            }
+        }
+        
+        function celebrateCompletion() {
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: fixed;
+                    width: 10px;
+                    height: 10px;
+                    background: hsl(${Math.random() * 360}, 100%, 50%);
+                    left: ${Math.random() * 100}%;
+                    bottom: -10px;
+                    border-radius: 50%;
+                    z-index: 9999;
+                    animation: confetti 1s ease-out forwards;
+                    animation-delay: ${Math.random() * 0.5}s;
+                `;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 1500);
+            }
+        }
+        
+        // ============ OVERALL PROGRESS ============
+        function updateOverallProgress() {
+            const subjects = getSubjectsForUser();
+            let totalTopics = 0;
+            let completedTopics = 0;
+            
+            subjects.forEach(subject => {
+                totalTopics += getTotalTopics(subject);
+                completedTopics += getCompletedTopics(subject.key);
+            });
+            
+            const percent = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+            document.getElementById('overallProgress').style.width = percent + '%';
+            document.getElementById('overallPercent').textContent = percent + '%';
+            document.getElementById('completedCount').textContent = `${completedTopics} / ${totalTopics} Topics`;
+        }
+        
+        // ============ RESET ============
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all your progress? This cannot be undone!')) {
+                currentUser.progress = {};
+                saveCurrentUser();
+                renderSubjects();
+                updateOverallProgress();
+            }
+        }
+        
+        // ============ START ============
+        init();
+    </script>
+</body>
+</html>
