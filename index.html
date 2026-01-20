@@ -6,6 +6,12 @@
     <title>ICSE Planner - Syllabus Tracker 2025</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <style>
         * { font-family: 'Poppins', sans-serif; }
         
@@ -63,19 +69,16 @@
             100% { transform: scale(4); opacity: 0; }
         }
         
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
         }
         
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: #3b82f6; }
-        }
-        
-        @keyframes rotate-3d {
-            0% { transform: perspective(1000px) rotateY(0deg); }
-            100% { transform: perspective(1000px) rotateY(360deg); }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         @keyframes fadeIn {
@@ -86,13 +89,6 @@
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.1); }
-            50% { transform: scale(1); }
-            75% { transform: scale(1.1); }
         }
         
         .animate-float { animation: float 3s ease-in-out infinite; }
@@ -110,6 +106,7 @@
         .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
         .animate-slideDown { animation: slideDown 0.5s ease-out forwards; }
         .animate-heartbeat { animation: heartbeat 1s ease-in-out infinite; }
+        .animate-spin { animation: spin 1s linear infinite; }
         
         .card-hover {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -125,6 +122,18 @@
         }
         .btn-3d:active {
             box-shadow: 0 2px 0 #1e40af;
+            transform: translateY(4px);
+        }
+        
+        .btn-google {
+            box-shadow: 0 6px 0 #c4c4c4;
+            transition: all 0.2s;
+        }
+        .btn-google:hover {
+            background: #f1f1f1;
+        }
+        .btn-google:active {
+            box-shadow: 0 2px 0 #c4c4c4;
             transform: translateY(4px);
         }
         
@@ -218,46 +227,74 @@
             transform: rotateY(5deg) rotateX(5deg) scale(1.05);
         }
         
-        .tab-btn {
-            transition: all 0.3s;
-        }
-        .tab-btn.active {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
-        }
-        
-        .input-field {
-            transition: all 0.3s;
-        }
-        .input-field:focus {
-            transform: scale(1.02);
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
         }
         
-        .chapter-group {
-            border-left: 3px solid #3b82f6;
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .sync-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #3b82f6;
+            object-fit: cover;
         }
         
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #1e293b; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
-        
-        .password-toggle {
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .password-toggle:hover {
-            transform: scale(1.1);
-        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-x-hidden">
+    
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loader"></div>
+        <p class="text-blue-300 text-lg">Loading ICSE Planner...</p>
+    </div>
+    
+    <!-- Sync Indicator -->
+    <div id="syncIndicator" class="sync-indicator glass hidden">
+        <span id="syncIcon">☁️</span>
+        <span id="syncText">Synced</span>
+    </div>
     
     <!-- Floating Particles Background -->
     <div class="particles" id="particles"></div>
     
     <!-- Screen 1: Login/Signup -->
-    <div id="screen-auth" class="screen active min-h-screen flex items-center justify-center p-4">
+    <div id="screen-auth" class="screen min-h-screen flex items-center justify-center p-4">
         <div class="text-center max-w-md mx-auto w-full">
             <!-- ICSE Logo -->
             <div class="mb-8 animate-float">
@@ -275,64 +312,52 @@
                 Your Ultimate Syllabus Tracker for ICSE 2025
             </p>
             
-            <!-- Auth Tabs -->
+            <!-- Auth Box -->
             <div class="glass rounded-3xl p-8 animate-bounce-in" style="animation-delay: 0.4s;">
-                <div class="flex mb-6 bg-slate-800/50 rounded-xl p-1">
-                    <button onclick="switchAuthTab('login')" id="loginTab" class="tab-btn flex-1 py-3 rounded-lg font-semibold active">
-                        🔑 Login
-                    </button>
-                    <button onclick="switchAuthTab('signup')" id="signupTab" class="tab-btn flex-1 py-3 rounded-lg font-semibold">
-                        ✨ Sign Up
-                    </button>
+                <div class="mb-6">
+                    <div class="w-20 h-20 mx-auto bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
+                        <span class="text-4xl">🎓</span>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">Welcome, Student!</h2>
+                    <p class="text-blue-300 text-sm">Sign in to track your ICSE 2025 preparation</p>
                 </div>
                 
-                <!-- Login Form -->
-                <div id="loginForm">
-                    <div class="mb-4">
-                        <input type="text" id="loginUsername" placeholder="Username" 
-                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-blue-400/50 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/30 text-lg">
+                <!-- Google Sign In Button -->
+                <button onclick="signInWithGoogle()" id="googleSignInBtn"
+                        class="btn-google w-full bg-white text-gray-800 font-bold py-4 px-8 rounded-xl text-lg flex items-center justify-center gap-4 hover:bg-gray-100 transition-all">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+                
+                <div id="authError" class="text-red-400 text-sm mt-4 hidden"></div>
+                
+                <div class="mt-6 pt-6 border-t border-white/20">
+                    <div class="flex items-center justify-center gap-2 text-sm text-blue-300">
+                        <span>🔒</span>
+                        <span>Secure authentication powered by Firebase</span>
                     </div>
-                    <div class="mb-4 relative">
-                        <input type="password" id="loginPassword" placeholder="Password" 
-                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-blue-400/50 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/30 text-lg pr-14">
-                        <span onclick="togglePassword('loginPassword', this)" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-2xl">👁️</span>
-                    </div>
-                    <div id="loginError" class="text-red-400 text-sm mb-4 hidden"></div>
-                    <button onclick="handleLogin()" 
-                            class="btn-3d w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl text-xl hover:from-blue-600 hover:to-purple-700 transition-all">
-                        🚀 Login
-                    </button>
                 </div>
                 
-                <!-- Signup Form -->
-                <div id="signupForm" class="hidden">
-                    <div class="mb-4">
-                        <input type="text" id="signupName" placeholder="Full Name" 
-                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-green-400/50 rounded-xl text-white placeholder-green-200 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/30 text-lg">
+                <!-- Features -->
+                <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+                    <div class="p-3">
+                        <div class="text-2xl mb-1">☁️</div>
+                        <div class="text-xs text-blue-300">Cloud Sync</div>
                     </div>
-                    <div class="mb-4">
-                        <input type="text" id="signupUsername" placeholder="Choose Username" 
-                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-green-400/50 rounded-xl text-white placeholder-green-200 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/30 text-lg">
+                    <div class="p-3">
+                        <div class="text-2xl mb-1">📱</div>
+                        <div class="text-xs text-blue-300">All Devices</div>
                     </div>
-                    <div class="mb-4 relative">
-                        <input type="password" id="signupPassword" placeholder="Create Password" 
-                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-green-400/50 rounded-xl text-white placeholder-green-200 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/30 text-lg pr-14">
-                        <span onclick="togglePassword('signupPassword', this)" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-2xl">👁️</span>
+                    <div class="p-3">
+                        <div class="text-2xl mb-1">🔄</div>
+                        <div class="text-xs text-blue-300">Auto Save</div>
                     </div>
-                    <div class="mb-4 relative">
-                        <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" 
-                               class="input-field w-full px-6 py-4 bg-white/10 border-2 border-green-400/50 rounded-xl text-white placeholder-green-200 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/30 text-lg pr-14">
-                        <span onclick="togglePassword('signupConfirmPassword', this)" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-2xl">👁️</span>
-                    </div>
-                    <div id="signupError" class="text-red-400 text-sm mb-4 hidden"></div>
-                    <div id="signupSuccess" class="text-green-400 text-sm mb-4 hidden"></div>
-                    <button onclick="handleSignup()" 
-                            class="btn-3d btn-green-3d w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 px-8 rounded-xl text-xl hover:from-green-600 hover:to-emerald-700 transition-all">
-                        ✨ Create Account
-                    </button>
                 </div>
-                
-                <p class="mt-6 text-blue-300 text-sm" id="existingUserHint"></p>
             </div>
         </div>
     </div>
@@ -429,10 +454,9 @@
         <header class="glass sticky top-0 z-50 p-4">
             <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4a/CISCE_logo.png/200px-CISCE_logo.png" 
-                             alt="ICSE" class="w-10 h-10 object-contain"
-                             onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-blue-900 font-bold text-xs\'>ICSE</span>';">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                        <img id="userAvatar" src="" alt="User" class="w-full h-full object-cover"
+                             onerror="this.onerror=null; this.src=''; this.parentElement.innerHTML='<span class=\'text-blue-900 font-bold text-xs\'>ICSE</span>';">
                     </div>
                     <div>
                         <h1 class="text-xl font-bold">ICSE Planner</h1>
@@ -463,12 +487,10 @@
                     </div>
                 </div>
                 
-                <div class="flex gap-2">
-                    <button onclick="logout()" class="px-4 py-2 bg-yellow-500/20 hover:bg-yellow-500/40 rounded-lg text-yellow-300 transition-all">
-                        🚪 Logout
-                    </button>
-                    <button onclick="resetProgress()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/40 rounded-lg text-red-300 transition-all">
-                        🔄 Reset Progress
+                <div class="flex gap-2 items-center">
+                    <img id="headerAvatar" src="" class="w-10 h-10 rounded-full border-2 border-blue-400 hidden" alt="Profile">
+                    <button onclick="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/40 rounded-lg text-red-300 transition-all flex items-center gap-2">
+                        <span>🚪</span> Logout
                     </button>
                 </div>
             </div>
@@ -489,6 +511,9 @@
                     <span class="px-3 py-1 bg-purple-500/20 rounded-full" id="optionalBadge">Optional: -</span>
                     <span class="px-3 py-1 bg-green-500/20 rounded-full" id="completedCount">0 / 0 Topics</span>
                     <span class="px-3 py-1 bg-yellow-500/20 rounded-full" id="examDateBadge">Exam: -</span>
+                    <span class="px-3 py-1 bg-cyan-500/20 rounded-full flex items-center gap-1">
+                        <span>☁️</span> Cloud Synced
+                    </span>
                 </div>
             </div>
             
@@ -528,6 +553,27 @@
     </div>
 
     <script>
+        // ============ FIREBASE CONFIGURATION ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqSu-4wkbFNpRINLlHo5sWGM-bPY-MBvM",
+            authDomain: "icse-syllabus-tracker.firebaseapp.com",
+            projectId: "icse-syllabus-tracker",
+            storageBucket: "icse-syllabus-tracker.firebasestorage.app",
+            messagingSenderId: "925688497446",
+            appId: "1:925688497446:web:17823893ee2350942c2de7",
+            measurementId: "G-17BGSZT6DD"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Enable offline persistence
+        db.enablePersistence().catch((err) => {
+            console.log("Persistence error:", err);
+        });
+
         // ============ COMPLETE ICSE 2025 SYLLABUS DATA ============
         const syllabusData = {
             // Common subjects for both streams
@@ -702,7 +748,6 @@
                             "नेता जी का चश्मा - स्वयं प्रकाश",
                             "अपना अपना भाग्य - जैनेन्द्र कुमार",
                             "महायज्ञ का पुरस्कार - यशपाल",
-                            "अमृता प्रीतम - जीवन परिचय",
                             "पत्र लेखन",
                             "गद्यांश व्याख्या",
                             "चरित्र चित्रण"
@@ -711,7 +756,7 @@
                             "साखी - कबीर",
                             "मीरा के पद - मीराबाई",
                             "गिरिधर की कुंडलियाँ - गिरिधर",
-                            "कर्मवीर - अयोध्या सिंह उपाध्याय 'हरिऔध'",
+                            "कर्मवीर - अयोध्या सिंह उपाध्याय हरिऔध",
                             "पद व्याख्या",
                             "काव्य सौंदर्य",
                             "अलंकार पहचान"
@@ -1621,13 +1666,6 @@
                             "Cooperative Stores",
                             "International Trade - Import and Export"
                         ],
-                        "E-Commerce": [
-                            "Introduction to E-Commerce",
-                            "Types of E-Commerce",
-                            "Advantages and Disadvantages",
-                            "Online Shopping",
-                            "Digital Payment Methods"
-                        ],
                         "Banking": [
                             "Types of Banks",
                             "Functions of Commercial Banks",
@@ -1651,8 +1689,7 @@
                             "Rail Transport",
                             "Water Transport",
                             "Air Transport",
-                            "Pipeline Transport",
-                            "Factors in Selection"
+                            "Pipeline Transport"
                         ],
                         "Communication": [
                             "Business Communication",
@@ -1674,13 +1711,6 @@
                             "Consumer Protection Act",
                             "Consumer Courts",
                             "Filing a Complaint"
-                        ],
-                        "Entrepreneurship": [
-                            "Meaning and Importance",
-                            "Qualities of an Entrepreneur",
-                            "Types of Entrepreneurs",
-                            "Startup Ecosystem",
-                            "Government Schemes"
                         ]
                     }
                 },
@@ -1878,31 +1908,20 @@
                             "Transpose of Matrix",
                             "Row Sum and Column Sum"
                         ],
-                        "String Handling - String Class": [
+                        "String Handling": [
                             "String - Introduction",
                             "String Methods - length()",
                             "String Methods - charAt()",
                             "String Methods - substring()",
                             "String Methods - indexOf()",
-                            "String Methods - lastIndexOf()",
                             "String Methods - equals() and equalsIgnoreCase()",
                             "String Methods - compareTo()",
                             "String Methods - toUpperCase() and toLowerCase()",
                             "String Methods - trim()",
                             "String Methods - replace()",
-                            "String Methods - concat()",
                             "String Programs - Palindrome",
                             "String Programs - Vowel Count",
                             "String Programs - Word Count"
-                        ],
-                        "String Handling - StringBuffer Class": [
-                            "StringBuffer - Introduction",
-                            "append()",
-                            "insert()",
-                            "delete() and deleteCharAt()",
-                            "reverse()",
-                            "setCharAt()",
-                            "String vs StringBuffer"
                         ],
                         "Practical Programs": [
                             "Menu Driven Programs",
@@ -1924,7 +1943,6 @@
                             "Meaning of Health",
                             "Dimensions of Health",
                             "Factors Affecting Health",
-                            "Importance of Health Education",
                             "Communicable Diseases",
                             "Non-Communicable Diseases",
                             "Lifestyle Disorders"
@@ -1932,12 +1950,10 @@
                         "First Aid": [
                             "Meaning and Importance",
                             "First Aid Kit",
-                            "Treatment of Cuts and Wounds",
+                            "Treatment of Wounds",
                             "Treatment of Burns",
                             "Treatment of Fractures",
-                            "Treatment of Sprains",
-                            "CPR Basics",
-                            "Drowning and Electric Shock"
+                            "CPR Basics"
                         ],
                         "Physical Fitness": [
                             "Components of Physical Fitness",
@@ -1946,43 +1962,30 @@
                             "Endurance",
                             "Flexibility",
                             "Agility",
-                            "Balance and Coordination",
-                            "Fitness Tests"
+                            "Balance and Coordination"
                         ],
-                        "Yoga and Meditation": [
+                        "Yoga": [
                             "Introduction to Yoga",
                             "Importance of Yoga",
                             "Asanas - Standing",
                             "Asanas - Sitting",
                             "Asanas - Prone",
                             "Asanas - Supine",
-                            "Pranayama",
-                            "Meditation Techniques"
+                            "Pranayama"
                         ],
                         "Athletics": [
                             "Track Events - Sprints",
                             "Track Events - Middle Distance",
-                            "Track Events - Relay",
                             "Field Events - Long Jump",
                             "Field Events - High Jump",
-                            "Field Events - Shot Put",
-                            "Field Events - Discus Throw"
+                            "Field Events - Shot Put"
                         ],
                         "Team Games": [
                             "Cricket - Rules and Skills",
                             "Football - Rules and Skills",
                             "Hockey - Rules and Skills",
                             "Basketball - Rules and Skills",
-                            "Volleyball - Rules and Skills",
-                            "Kabaddi - Rules and Skills",
-                            "Kho-Kho - Rules and Skills"
-                        ],
-                        "Individual Games": [
-                            "Badminton - Rules and Skills",
-                            "Table Tennis - Rules and Skills",
-                            "Tennis - Rules and Skills",
-                            "Swimming - Basics",
-                            "Gymnastics - Basics"
+                            "Volleyball - Rules and Skills"
                         ],
                         "Nutrition": [
                             "Balanced Diet",
@@ -1990,21 +1993,7 @@
                             "Nutrients - Proteins",
                             "Nutrients - Fats",
                             "Vitamins and Minerals",
-                            "Water and Fiber",
                             "Diet for Sports Persons"
-                        ],
-                        "Posture": [
-                            "Good Posture - Importance",
-                            "Common Postural Deformities",
-                            "Kyphosis, Lordosis, Scoliosis",
-                            "Flat Foot, Knock Knees",
-                            "Corrective Exercises"
-                        ],
-                        "Practical Assessment": [
-                            "Fitness Test Performance",
-                            "Game Skills",
-                            "Athletics Performance",
-                            "Yoga Demonstration"
                         ]
                     }
                 },
@@ -2024,10 +2013,8 @@
                         ],
                         "Drawing": [
                             "Still Life Drawing",
-                            "Nature Drawing - Plants",
-                            "Nature Drawing - Animals",
+                            "Nature Drawing",
                             "Human Figure - Proportions",
-                            "Human Figure - Poses",
                             "Object Drawing",
                             "Landscape Drawing",
                             "Shading Techniques"
@@ -2036,54 +2023,27 @@
                             "Watercolor Techniques",
                             "Poster Color Techniques",
                             "Color Mixing",
-                            "Wash Techniques",
                             "Composition in Painting",
-                            "Landscape Painting",
-                            "Portrait Basics"
+                            "Landscape Painting"
                         ],
-                        "History of Indian Art": [
-                            "Prehistoric Art",
-                            "Indus Valley Art",
-                            "Buddhist Art",
-                            "Mughal Paintings",
-                            "Rajasthani Paintings",
-                            "Bengal School",
-                            "Modern Indian Artists"
-                        ],
-                        "History of Western Art": [
-                            "Renaissance Art",
-                            "Impressionism",
-                            "Post-Impressionism",
-                            "Cubism",
-                            "Surrealism",
-                            "Pop Art",
-                            "Famous Western Artists"
+                        "History of Art": [
+                            "Indian Art - Prehistoric",
+                            "Indian Art - Mughal",
+                            "Indian Art - Modern",
+                            "Western Art - Renaissance",
+                            "Western Art - Impressionism"
                         ],
                         "Music Theory": [
                             "Notes and Scales",
                             "Swaras in Indian Music",
                             "Ragas - Introduction",
                             "Talas - Introduction",
-                            "Western Notation",
-                            "Rhythm and Beat",
-                            "Melody and Harmony"
-                        ],
-                        "Indian Classical Music": [
-                            "Hindustani Music",
-                            "Carnatic Music",
-                            "Types of Ragas",
-                            "Types of Talas",
-                            "Musical Instruments - String",
-                            "Musical Instruments - Wind",
-                            "Musical Instruments - Percussion"
+                            "Western Notation"
                         ],
                         "Practical Work": [
                             "Portfolio Preparation",
                             "Composition Creation",
                             "Model Making",
-                            "Craft Work",
-                            "Vocal Practice",
-                            "Instrument Practice",
                             "Performance Skills"
                         ]
                     }
@@ -2093,13 +2053,26 @@
         
         // ============ APP STATE ============
         let currentUser = null;
-        let users = {};
+        let firebaseUser = null;
+        let syncTimeout = null;
         
         // ============ INITIALIZATION ============
         function init() {
             createParticles();
-            loadUsers();
-            checkLoggedInUser();
+            
+            // Listen for auth state changes
+            auth.onAuthStateChanged(async (user) => {
+                hideLoading();
+                
+                if (user) {
+                    firebaseUser = user;
+                    await loadUserData(user);
+                } else {
+                    firebaseUser = null;
+                    currentUser = null;
+                    showScreen('auth');
+                }
+            });
         }
         
         function createParticles() {
@@ -2117,172 +2090,162 @@
             }
         }
         
-        function loadUsers() {
-            const saved = localStorage.getItem('icse_users');
-            if (saved) {
-                users = JSON.parse(saved);
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        // ============ FIREBASE AUTH FUNCTIONS ============
+        async function signInWithGoogle() {
+            const btn = document.getElementById('googleSignInBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loader w-6 h-6 border-2"></div> Signing in...';
+            
+            const provider = new firebase.auth.GoogleAuthProvider();
+            
+            try {
+                const result = await auth.signInWithPopup(provider);
+                // User will be handled by onAuthStateChanged
+            } catch (error) {
+                console.error("Sign-in error:", error);
+                showAuthError(error.message);
+                btn.disabled = false;
+                btn.innerHTML = `<svg class="w-6 h-6" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg> Sign in with Google`;
             }
         }
         
-        function saveUsers() {
-            localStorage.setItem('icse_users', JSON.stringify(users));
+        function showAuthError(message) {
+            const errorDiv = document.getElementById('authError');
+            errorDiv.textContent = '❌ ' + message;
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => errorDiv.classList.add('hidden'), 5000);
         }
         
-        function checkLoggedInUser() {
-            const loggedIn = localStorage.getItem('icse_current_user');
-            if (loggedIn && users[loggedIn]) {
-                currentUser = users[loggedIn];
-                if (currentUser.setupComplete) {
-                    goToDashboard();
-                } else if (currentUser.stream) {
-                    if (currentUser.optional) {
-                        showScreen('exam');
+        async function loadUserData(user) {
+            showLoading();
+            
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                
+                if (userDoc.exists) {
+                    currentUser = userDoc.data();
+                    currentUser.uid = user.uid;
+                    
+                    if (currentUser.setupComplete) {
+                        goToDashboard();
+                    } else if (currentUser.stream) {
+                        if (currentUser.optional) {
+                            showScreen('exam');
+                        } else {
+                            showScreen('optional');
+                        }
+                        document.getElementById('welcomeName').textContent = currentUser.name || user.displayName;
                     } else {
-                        showScreen('optional');
+                        showScreen('stream');
+                        document.getElementById('welcomeName').textContent = currentUser.name || user.displayName;
                     }
                 } else {
+                    // New user - create document
+                    currentUser = {
+                        name: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        stream: '',
+                        optional: '',
+                        examDate: '',
+                        progress: {},
+                        setupComplete: false,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    await db.collection('users').doc(user.uid).set(currentUser);
+                    currentUser.uid = user.uid;
+                    
                     showScreen('stream');
-                    document.getElementById('welcomeName').textContent = currentUser.name;
+                    document.getElementById('welcomeName').textContent = user.displayName;
                 }
+            } catch (error) {
+                console.error("Error loading user data:", error);
+                showAuthError("Failed to load user data. Please try again.");
+            }
+            
+            hideLoading();
+        }
+        
+        async function logout() {
+            showLoading();
+            try {
+                await auth.signOut();
+                currentUser = null;
+                firebaseUser = null;
+                showScreen('auth');
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+            hideLoading();
+        }
+        
+        // ============ SYNC FUNCTIONS ============
+        function showSyncStatus(status, message) {
+            const indicator = document.getElementById('syncIndicator');
+            const icon = document.getElementById('syncIcon');
+            const text = document.getElementById('syncText');
+            
+            indicator.classList.remove('hidden');
+            
+            if (status === 'syncing') {
+                icon.innerHTML = '<div class="loader w-4 h-4 border-2"></div>';
+                text.textContent = 'Syncing...';
+                indicator.className = 'sync-indicator glass flex';
+            } else if (status === 'success') {
+                icon.textContent = '✅';
+                text.textContent = 'Saved!';
+                indicator.className = 'sync-indicator glass flex bg-green-500/20';
+            } else if (status === 'error') {
+                icon.textContent = '❌';
+                text.textContent = 'Sync failed';
+                indicator.className = 'sync-indicator glass flex bg-red-500/20';
+            }
+            
+            if (status !== 'syncing') {
+                setTimeout(() => {
+                    indicator.classList.add('hidden');
+                }, 2000);
             }
         }
         
-        // ============ AUTH FUNCTIONS ============
-        function switchAuthTab(tab) {
-            document.getElementById('loginTab').classList.toggle('active', tab === 'login');
-            document.getElementById('signupTab').classList.toggle('active', tab === 'signup');
-            document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
-            document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
-            hideErrors();
-        }
-        
-        function hideErrors() {
-            document.getElementById('loginError').classList.add('hidden');
-            document.getElementById('signupError').classList.add('hidden');
-            document.getElementById('signupSuccess').classList.add('hidden');
-        }
-        
-        function togglePassword(inputId, icon) {
-            const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.textContent = '🙈';
-            } else {
-                input.type = 'password';
-                icon.textContent = '👁️';
-            }
-        }
-        
-        function handleSignup() {
-            const name = document.getElementById('signupName').value.trim();
-            const username = document.getElementById('signupUsername').value.trim().toLowerCase();
-            const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+        async function saveToFirebase() {
+            if (!currentUser || !currentUser.uid) return;
             
-            hideErrors();
+            // Debounce saves
+            if (syncTimeout) clearTimeout(syncTimeout);
             
-            if (!name || !username || !password || !confirmPassword) {
-                showError('signupError', 'Please fill in all fields');
-                return;
-            }
-            
-            if (username.length < 3) {
-                showError('signupError', 'Username must be at least 3 characters');
-                return;
-            }
-            
-            if (password.length < 4) {
-                showError('signupError', 'Password must be at least 4 characters');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showError('signupError', 'Passwords do not match');
-                return;
-            }
-            
-            if (users[username]) {
-                showError('signupError', 'Username already exists');
-                return;
-            }
-            
-            // Create new user
-            users[username] = {
-                name: name,
-                username: username,
-                password: password,
-                stream: '',
-                optional: '',
-                examDate: '',
-                progress: {},
-                setupComplete: false
-            };
-            
-            saveUsers();
-            
-            document.getElementById('signupSuccess').textContent = '✅ Account created! Please login.';
-            document.getElementById('signupSuccess').classList.remove('hidden');
-            
-            // Clear form
-            document.getElementById('signupName').value = '';
-            document.getElementById('signupUsername').value = '';
-            document.getElementById('signupPassword').value = '';
-            document.getElementById('signupConfirmPassword').value = '';
-            
-            // Switch to login after 2 seconds
-            setTimeout(() => {
-                switchAuthTab('login');
-                document.getElementById('loginUsername').value = username;
-            }, 1500);
-        }
-        
-        function handleLogin() {
-            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
-            const password = document.getElementById('loginPassword').value;
-            
-            hideErrors();
-            
-            if (!username || !password) {
-                showError('loginError', 'Please enter username and password');
-                return;
-            }
-            
-            if (!users[username]) {
-                showError('loginError', 'User not found. Please sign up first.');
-                return;
-            }
-            
-            if (users[username].password !== password) {
-                showError('loginError', 'Incorrect password');
-                return;
-            }
-            
-            // Login successful
-            currentUser = users[username];
-            localStorage.setItem('icse_current_user', username);
-            
-            if (currentUser.setupComplete) {
-                goToDashboard();
-            } else {
-                showScreen('stream');
-                document.getElementById('welcomeName').textContent = currentUser.name;
-            }
-        }
-        
-        function showError(elementId, message) {
-            const el = document.getElementById(elementId);
-            el.textContent = '❌ ' + message;
-            el.classList.remove('hidden');
-            el.parentElement.classList.add('animate-shake');
-            setTimeout(() => el.parentElement.classList.remove('animate-shake'), 500);
-        }
-        
-        function logout() {
-            localStorage.removeItem('icse_current_user');
-            currentUser = null;
-            showScreen('auth');
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
+            syncTimeout = setTimeout(async () => {
+                showSyncStatus('syncing');
+                
+                try {
+                    await db.collection('users').doc(currentUser.uid).update({
+                        progress: currentUser.progress,
+                        stream: currentUser.stream,
+                        optional: currentUser.optional,
+                        examDate: currentUser.examDate,
+                        setupComplete: currentUser.setupComplete,
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    showSyncStatus('success');
+                } catch (error) {
+                    console.error("Sync error:", error);
+                    showSyncStatus('error');
+                }
+            }, 500);
         }
         
         // ============ NAVIGATION ============
@@ -2292,15 +2255,15 @@
             window.scrollTo(0, 0);
         }
         
-        function selectStream(stream) {
+        async function selectStream(stream) {
             currentUser.stream = stream;
-            saveCurrentUser();
+            await saveToFirebase();
             showScreen('optional');
         }
         
-        function selectOptional(optional) {
+        async function selectOptional(optional) {
             currentUser.optional = optional;
-            saveCurrentUser();
+            await saveToFirebase();
             showScreen('exam');
             
             // Set default date
@@ -2309,7 +2272,7 @@
             document.getElementById('examDate').value = `${year}-02-20`;
         }
         
-        function setExamDate() {
+        async function setExamDate() {
             const date = document.getElementById('examDate').value;
             if (!date) {
                 document.getElementById('examDate').classList.add('animate-shake');
@@ -2318,20 +2281,23 @@
             }
             currentUser.examDate = date;
             currentUser.setupComplete = true;
-            saveCurrentUser();
+            await saveToFirebase();
             goToDashboard();
         }
         
-        function saveCurrentUser() {
-            users[currentUser.username] = currentUser;
-            saveUsers();
-        }
-        
         function goToDashboard() {
-            document.getElementById('displayName').textContent = currentUser.name;
+            const displayName = currentUser.name || (firebaseUser && firebaseUser.displayName) || 'Student';
+            document.getElementById('displayName').textContent = displayName;
             document.getElementById('streamBadge').textContent = 'Stream: ' + (currentUser.stream === 'science' ? '🔬 Science' : '📊 Commerce');
             document.getElementById('optionalBadge').textContent = 'Optional: ' + getOptionalName();
             document.getElementById('examDateBadge').textContent = 'Exam: ' + new Date(currentUser.examDate).toLocaleDateString();
+            
+            // Set user avatar
+            if (firebaseUser && firebaseUser.photoURL) {
+                document.getElementById('userAvatar').src = firebaseUser.photoURL;
+                document.getElementById('headerAvatar').src = firebaseUser.photoURL;
+                document.getElementById('headerAvatar').classList.remove('hidden');
+            }
             
             showScreen('dashboard');
             renderSubjects();
@@ -2351,6 +2317,8 @@
         }
         
         function updateTimer() {
+            if (!currentUser || !currentUser.examDate) return;
+            
             const examDate = new Date(currentUser.examDate + 'T00:00:00');
             const now = new Date();
             const diff = examDate - now;
@@ -2529,7 +2497,7 @@
             updateOverallProgress();
         }
         
-        function toggleTopic(subjectKey, chapterName, topicIndex, isChecked) {
+        async function toggleTopic(subjectKey, chapterName, topicIndex, isChecked) {
             if (!currentUser.progress[subjectKey]) {
                 currentUser.progress[subjectKey] = {};
             }
@@ -2547,7 +2515,8 @@
                     currentUser.progress[subjectKey][chapterName].filter(i => i !== topicIndex);
             }
             
-            saveCurrentUser();
+            // Save to Firebase
+            await saveToFirebase();
             
             // Update modal progress
             const subjects = getSubjectsForUser();
@@ -2598,12 +2567,14 @@
         }
         
         // ============ RESET ============
-        function resetProgress() {
+        async function resetProgress() {
             if (confirm('Are you sure you want to reset all your progress? This cannot be undone!')) {
+                showLoading();
                 currentUser.progress = {};
-                saveCurrentUser();
+                await saveToFirebase();
                 renderSubjects();
                 updateOverallProgress();
+                hideLoading();
             }
         }
         
