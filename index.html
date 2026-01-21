@@ -1381,6 +1381,13 @@
             const subjects = getSubjectsForUser();
             const container = document.getElementById('syllabusContainer');
             container.innerHTML = '';
+            
+            console.log('Rendering syllabus, subjects count:', subjects.length);
+            
+            if (subjects.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-400 py-8">No subjects found. Please complete setup first.</p>';
+                return;
+            }
 
             let total = 0, completed = 0;
 
@@ -1413,14 +1420,14 @@
                                 <div class="w-32 h-2 bg-white/10 rounded-full overflow-hidden hidden md:block">
                                     <div class="h-full bg-gradient-to-r ${subject.color} transition-all" style="width: ${pct}%"></div>
                                 </div>
-                                <svg id="arrow_${id}" class="w-5 h-5 transition-transform text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg id="arrow_${id}" class="w-5 h-5 transition-transform text-gray-400 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                 </svg>
                             </div>
                         </button>
-                        <div id="acc_${id}" class="accordion-content">
+                        <div id="acc_${id}" class="accordion-content open">
                             <div class="accordion-inner">
-                                <div class="p-4 pt-0 space-y-2 max-h-80 overflow-y-auto">
+                                <div class="p-4 pt-0 space-y-2 max-h-96 overflow-y-auto">
                                     ${filteredChapters.map(({ ch, i, done }) => `
                                         <label class="chapter-row flex items-center gap-3 p-3 rounded-xl cursor-pointer ${done ? 'completed' : ''}">
                                             <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleChapter('${id}', ${i})" class="custom-checkbox">
@@ -1441,19 +1448,32 @@
 
         function getSubjectsForUser() {
             const subjects = [];
-            Object.entries(syllabusData.common).forEach(([n, d]) => subjects.push({ name: n, ...d }));
-            const stream = syllabusData[userData.stream];
-            if (stream) Object.entries(stream).forEach(([n, d]) => subjects.push({ name: n, ...d }));
-            const opt = syllabusData.optional[userData.optional];
-            if (opt) Object.entries(opt).forEach(([n, d]) => subjects.push({ name: n, ...d }));
+            // Add common subjects
+            if (syllabusData.common) {
+                Object.entries(syllabusData.common).forEach(([n, d]) => subjects.push({ name: n, ...d }));
+            }
+            // Add stream-specific subjects
+            if (userData.stream && syllabusData[userData.stream]) {
+                Object.entries(syllabusData[userData.stream]).forEach(([n, d]) => subjects.push({ name: n, ...d }));
+            }
+            // Add optional subject
+            if (userData.optional && syllabusData.optional && syllabusData.optional[userData.optional]) {
+                Object.entries(syllabusData.optional[userData.optional]).forEach(([n, d]) => subjects.push({ name: n, ...d }));
+            }
+            console.log('Subjects loaded:', subjects.length, subjects.map(s => s.name));
             return subjects;
         }
 
         function toggleAccordion(id) {
             const acc = document.getElementById(`acc_${id}`);
             const arrow = document.getElementById(`arrow_${id}`);
+            const isOpen = acc.classList.contains('open');
             acc.classList.toggle('open');
-            arrow.style.transform = acc.classList.contains('open') ? 'rotate(180deg)' : '';
+            if (isOpen) {
+                arrow.classList.remove('rotate-180');
+            } else {
+                arrow.classList.add('rotate-180');
+            }
         }
 
         async function toggleChapter(subjectId, index) {
