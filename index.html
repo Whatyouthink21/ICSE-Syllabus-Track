@@ -8,784 +8,618 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .font-display { font-family: 'Space Grotesk', sans-serif; }
-        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
         :root {
             --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --accent: #f472b6;
-            --bg-dark: #0a0a0f;
-            --bg-card: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
-            --glow: rgba(99, 102, 241, 0.4);
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --card-hover: #252542;
+            --border: #2a2a4a;
+            --text: #ffffff;
+            --text-muted: #9ca3af;
         }
 
         body {
-            background: var(--bg-dark);
-            overflow-x: hidden;
+            background: var(--bg);
+            min-height: 100vh;
         }
 
-        /* Animated Mesh Gradient Background */
-        .mesh-bg {
+        /* Animated Background */
+        .bg-pattern {
             position: fixed;
             inset: 0;
+            z-index: -1;
             background: 
-                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99, 102, 241, 0.15), transparent),
-                radial-gradient(ellipse 60% 50% at 80% 20%, rgba(244, 114, 182, 0.12), transparent),
-                radial-gradient(ellipse 50% 40% at 50% 80%, rgba(34, 211, 238, 0.1), transparent),
-                var(--bg-dark);
-            z-index: -2;
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.05) 0%, transparent 50%);
         }
 
-        /* Floating Particles */
-        .particles {
+        .floating-orb {
             position: fixed;
-            inset: 0;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            animation: float-particle linear infinite;
-        }
-
-        @keyframes float-particle {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
-        }
-
-        /* Grid Pattern Overlay */
-        .grid-overlay {
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 50px 50px;
+            filter: blur(80px);
+            animation: float 20s ease-in-out infinite;
             z-index: -1;
-            mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
         }
 
-        /* Glassmorphism Card */
-        .glass-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-            backdrop-filter: blur(20px);
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(30px, 50px) scale(1.05); }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card);
             border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
+            border-radius: 20px;
+            transition: all 0.3s ease;
         }
 
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.1);
         }
 
-        /* Glow Effect */
-        .glow {
-            box-shadow: 0 0 60px -15px var(--glow);
-        }
-
-        .glow-text {
-            text-shadow: 0 0 40px var(--glow);
-        }
-
-        /* Animated Gradient Text */
+        /* Gradient Text */
         .gradient-text {
-            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899, #6366f1);
-            background-size: 300% 300%;
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #6366f1 100%);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradient-flow 4s ease infinite;
+            animation: gradient-shift 3s ease infinite;
         }
 
-        @keyframes gradient-flow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
         }
 
-        /* Hover Lift Effect */
-        .hover-lift {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .hover-lift:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.3);
-        }
-
-        /* Magnetic Button */
-        .magnetic-btn {
-            position: relative;
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
             transition: all 0.3s ease;
-        }
-        .magnetic-btn::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
-            border-radius: inherit;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .magnetic-btn:hover::before {
-            opacity: 1;
-        }
-        .magnetic-btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: inherit;
-            border-radius: inherit;
-            z-index: -1;
-        }
-
-        /* Ripple Effect */
-        .ripple {
             position: relative;
             overflow: hidden;
         }
-        .ripple-effect {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(0);
-            animation: ripple-anim 0.6s linear;
-            pointer-events: none;
-        }
-        @keyframes ripple-anim {
-            to { transform: scale(4); opacity: 0; }
-        }
 
-        /* Stagger Animation */
-        .stagger-in > * {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: stagger-fade-in 0.6s ease forwards;
-        }
-        @keyframes stagger-fade-in {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Slide Animations */
-        @keyframes slide-up {
-            from { opacity: 0; transform: translateY(60px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slide-down {
-            from { opacity: 0; transform: translateY(-60px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slide-left {
-            from { opacity: 0; transform: translateX(60px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slide-right {
-            from { opacity: 0; transform: translateX(-60px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes scale-in {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes blur-in {
-            from { opacity: 0; filter: blur(20px); }
-            to { opacity: 1; filter: blur(0); }
-        }
-
-        .animate-slide-up { animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-slide-down { animation: slide-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-slide-left { animation: slide-left 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-slide-right { animation: slide-right 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-scale-in { animation: scale-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-blur-in { animation: blur-in 0.8s ease forwards; }
-
-        /* Pulse Ring */
-        @keyframes pulse-ring {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-        }
-        .pulse-ring { animation: pulse-ring 2s ease infinite; }
-
-        /* Counter Animation */
-        @keyframes count-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Progress Ring */
-        .progress-ring-bg { stroke: rgba(255, 255, 255, 0.1); }
-        .progress-ring-fill {
-            stroke: url(#progressGradient);
-            stroke-linecap: round;
-            transition: stroke-dasharray 1s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
-        }
-
-        /* Checkbox Styling */
-        .custom-checkbox {
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-        }
-        .custom-checkbox:hover {
-            border-color: var(--primary);
-            transform: scale(1.1);
-        }
-        .custom-checkbox:checked {
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            border-color: transparent;
-            transform: scale(1.1);
-        }
-        .custom-checkbox:checked::after {
-            content: '✓';
+        .btn-primary::before {
+            content: '';
             position: absolute;
             inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            animation: check-pop 0.3s ease;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-        @keyframes check-pop {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary span {
+            position: relative;
+            z-index: 1;
         }
 
         /* Subject Card */
         .subject-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .subject-card:hover {
-            border-color: rgba(99, 102, 241, 0.3);
-            box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
-            transform: translateY(-4px);
-        }
-
-        /* Chapter Row */
-        .chapter-row {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
             transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-        .chapter-row:hover {
-            background: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.05);
-            transform: translateX(8px);
-        }
-        .chapter-row.completed {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%);
-            border-color: rgba(34, 197, 94, 0.2);
         }
 
-        /* Accordion */
-        .accordion-content {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
-        .accordion-content.open {
-            grid-template-rows: 1fr;
+
+        .subject-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s;
         }
-        .accordion-inner {
+
+        .subject-header:hover {
+            background: var(--card-hover);
+        }
+
+        .subject-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+
+        .subject-content.open {
+            max-height: 2000px;
+            transition: max-height 0.6s ease-in;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .chapter-item:hover {
+            background: var(--card-hover);
+            padding-left: 28px;
+        }
+
+        .chapter-item.completed {
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .chapter-item.completed .chapter-name {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        /* Custom Checkbox */
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+        }
+
+        .checkbox.checked {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            animation: check-bounce 0.4s ease;
+        }
+
+        @keyframes check-bounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.2); }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .checkbox svg {
+            width: 14px;
+            height: 14px;
+            stroke: white;
+            stroke-width: 3;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.2s ease;
+        }
+
+        .checkbox.checked svg {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Bookmark */
+        .bookmark {
+            color: var(--text-muted);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .bookmark:hover {
+            color: #fbbf24;
+        }
+
+        .bookmark.active {
+            color: #fbbf24;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
             overflow: hidden;
         }
 
-        /* Timer Cards */
-        .timer-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            position: relative;
-            overflow: hidden;
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
         }
-        .timer-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.1), transparent 30%);
-            animation: rotate-glow 4s linear infinite;
+
+        /* Timer */
+        .timer-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 90px;
         }
-        @keyframes rotate-glow {
-            to { transform: rotate(360deg); }
-        }
+
         .timer-value {
-            position: relative;
-            z-index: 1;
-            background: linear-gradient(180deg, #fff 0%, #a5b4fc 100%);
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(180deg, #fff, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1;
         }
 
-        /* Search Input */
-        .search-input {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
-        }
-        .search-input:focus {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { 
-            background: linear-gradient(180deg, #6366f1, #a855f7);
-            border-radius: 3px; 
-        }
-
-        /* Page Transitions */
-        .page { 
-            display: none; 
-            opacity: 0;
-        }
-        .page.active { 
-            display: block; 
-            animation: page-enter 0.6s ease forwards;
-        }
-        @keyframes page-enter {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Loading Animation */
-        .loader {
-            width: 120px;
-            height: 120px;
-            position: relative;
-        }
-        .loader-ring {
-            position: absolute;
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
             inset: 0;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            animation: loader-spin 1.5s linear infinite;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
         }
-        .loader-ring:nth-child(1) {
-            border-top-color: #6366f1;
-            animation-duration: 1.5s;
+
+        .modal-backdrop.open {
+            opacity: 1;
+            visibility: visible;
         }
-        .loader-ring:nth-child(2) {
-            inset: 10px;
-            border-right-color: #a855f7;
-            animation-duration: 2s;
-            animation-direction: reverse;
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            z-index: 101;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
         }
-        .loader-ring:nth-child(3) {
-            inset: 20px;
-            border-bottom-color: #ec4899;
-            animation-duration: 2.5s;
-        }
-        @keyframes loader-spin {
-            to { transform: rotate(360deg); }
+
+        .modal.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
         }
 
         /* Confetti */
         .confetti {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            top: -20px;
-            z-index: 1000;
+            z-index: 200;
             animation: confetti-fall linear forwards;
         }
+
         @keyframes confetti-fall {
-            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(1080deg) scale(0); opacity: 0; }
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
         }
 
-        /* Modal */
-        .modal-overlay {
-            backdrop-filter: blur(10px);
-            background: rgba(0, 0, 0, 0.6);
-        }
-        .modal-content {
-            animation: modal-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes modal-pop {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        /* Loading */
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        /* Milestone Badge */
-        .milestone-badge {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            animation: badge-shine 2s ease infinite;
-        }
-        @keyframes badge-shine {
-            0%, 100% { filter: brightness(1); }
-            50% { filter: brightness(1.2); }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        /* Stats Card Hover */
-        .stat-card {
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            transition: left 0.5s;
-        }
-        .stat-card:hover::after {
-            left: 100%;
+        /* Page transitions */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
         }
 
-        /* Filter Buttons */
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stats */
+        .stat-ring {
+            transform: rotate(-90deg);
+        }
+
+        .stat-ring circle {
+            transition: stroke-dasharray 1s ease;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Arrow rotation */
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .arrow.open {
+            transform: rotate(180deg);
+        }
+
+        /* Filter buttons */
         .filter-btn {
-            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
         }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
         .filter-btn.active {
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            box-shadow: 0 4px 15px -3px rgba(99, 102, 241, 0.5);
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
         }
 
-        /* Color Options */
-        .color-btn {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .color-btn:hover {
-            transform: scale(1.2);
-        }
-        .color-btn.active {
-            transform: scale(1.2);
-            box-shadow: 0 0 0 3px var(--bg-dark), 0 0 0 5px currentColor;
+        /* Subject icon */
+        .subject-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
         }
 
-        /* Theme Variations */
-        .theme-purple { --primary: #a855f7; --primary-dark: #9333ea; --glow: rgba(168, 85, 247, 0.4); }
-        .theme-pink { --primary: #ec4899; --primary-dark: #db2777; --glow: rgba(236, 72, 153, 0.4); }
-        .theme-cyan { --primary: #22d3ee; --primary-dark: #06b6d4; --glow: rgba(34, 211, 238, 0.4); }
-        .theme-green { --primary: #22c55e; --primary-dark: #16a34a; --glow: rgba(34, 197, 94, 0.4); }
-        .theme-orange { --primary: #f97316; --primary-dark: #ea580c; --glow: rgba(249, 115, 22, 0.4); }
-        .theme-red { --primary: #ef4444; --primary-dark: #dc2626; --glow: rgba(239, 68, 68, 0.4); }
+        /* Difficulty badge */
+        .difficulty {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
 
-        /* Light Mode */
+        .difficulty-easy { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .difficulty-medium { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+        .difficulty-hard { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        /* Theme */
+        .theme-purple { --primary: #a855f7; --primary-light: #c084fc; }
+        .theme-pink { --primary: #ec4899; --primary-light: #f472b6; }
+        .theme-blue { --primary: #3b82f6; --primary-light: #60a5fa; }
+        .theme-green { --primary: #22c55e; --primary-light: #4ade80; }
+        .theme-orange { --primary: #f97316; --primary-light: #fb923c; }
+        .theme-red { --primary: #ef4444; --primary-light: #f87171; }
+
+        /* Light mode */
         .light-mode {
-            --bg-dark: #f8fafc;
-            --bg-card: rgba(0, 0, 0, 0.02);
-            --border: rgba(0, 0, 0, 0.08);
+            --bg: #f5f5f5;
+            --card: #ffffff;
+            --card-hover: #f0f0f0;
+            --border: #e0e0e0;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
         }
-        .light-mode .mesh-bg {
-            background: 
-                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99, 102, 241, 0.08), transparent),
-                radial-gradient(ellipse 60% 50% at 80% 20%, rgba(244, 114, 182, 0.06), transparent),
-                radial-gradient(ellipse 50% 40% at 50% 80%, rgba(34, 211, 238, 0.05), transparent),
-                var(--bg-dark);
-        }
-        .light-mode .particle { background: rgba(0, 0, 0, 0.1); }
-        .light-mode .grid-overlay {
-            background-image: 
-                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-        }
-        .light-mode .glass-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.6) 100%);
-            border-color: rgba(0, 0, 0, 0.08);
-        }
-        .light-mode .subject-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
-            border-color: rgba(0, 0, 0, 0.06);
-        }
-        .light-mode .text-white { color: #1e293b !important; }
-        .light-mode .text-gray-400, .light-mode .text-gray-500 { color: #64748b !important; }
-        .light-mode .text-gray-300 { color: #475569 !important; }
-        .light-mode .timer-value {
-            background: linear-gradient(180deg, #1e293b 0%, #6366f1 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
+
+        .light-mode .gradient-text {
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
-<body class="min-h-screen text-white">
-    <!-- Background Effects -->
-    <div class="mesh-bg"></div>
-    <div class="grid-overlay"></div>
-    <div class="particles" id="particles"></div>
+<body class="text-white">
+    <!-- Background -->
+    <div class="bg-pattern"></div>
+    <div class="floating-orb" style="width: 400px; height: 400px; background: rgba(99, 102, 241, 0.3); top: -100px; left: -100px;"></div>
+    <div class="floating-orb" style="width: 300px; height: 300px; background: rgba(236, 72, 153, 0.2); bottom: -50px; right: -50px; animation-delay: -10s;"></div>
 
     <!-- Loading Screen -->
-    <div id="loadingScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0a0f]">
+    <div id="loadingScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0f0f1a]">
         <div class="text-center">
-            <div class="loader mx-auto mb-8">
-                <div class="loader-ring"></div>
-                <div class="loader-ring"></div>
-                <div class="loader-ring"></div>
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/CISCE_logo.png/150px-CISCE_logo.png" 
-                     alt="ICSE" class="absolute inset-0 m-auto w-12 h-12 rounded-full bg-white p-1">
-            </div>
-            <h1 class="text-3xl font-bold font-display gradient-text">ICSE Planner</h1>
-            <p class="text-gray-500 mt-2">Loading your syllabus...</p>
+            <div class="loader mx-auto mb-6"></div>
+            <h1 class="text-2xl font-bold gradient-text">ICSE Planner</h1>
+            <p class="text-gray-500 mt-2 text-sm">Loading...</p>
         </div>
     </div>
 
     <!-- Settings Modal -->
-    <div id="settingsModal" class="fixed inset-0 z-50 hidden">
-        <div class="modal-overlay absolute inset-0" onclick="closeSettings()"></div>
-        <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
-            <div class="modal-content glass-card rounded-3xl p-8 w-full max-w-lg pointer-events-auto">
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-2xl font-bold font-display flex items-center gap-3">
-                        <span class="text-3xl">⚙️</span> Settings
-                    </h2>
-                    <button onclick="closeSettings()" class="p-2 hover:bg-white/10 rounded-xl transition-all">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-                
-                <!-- Theme Mode -->
-                <div class="mb-8">
-                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Theme Mode</h3>
-                    <div class="flex gap-4">
-                        <button onclick="setThemeMode('dark')" id="darkModeBtn" class="flex-1 p-4 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition-all flex items-center justify-center gap-3 bg-white/5">
-                            <span class="text-2xl">🌙</span>
-                            <span class="font-medium">Dark</span>
-                        </button>
-                        <button onclick="setThemeMode('light')" id="lightModeBtn" class="flex-1 p-4 rounded-2xl border border-white/10 hover:border-yellow-500/50 transition-all flex items-center justify-center gap-3 bg-white/5">
-                            <span class="text-2xl">☀️</span>
-                            <span class="font-medium">Light</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Accent Color -->
-                <div class="mb-8">
-                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Accent Color</h3>
-                    <div class="flex flex-wrap gap-3 justify-center">
-                        <button onclick="setThemeColor('indigo')" data-color="indigo" class="color-btn w-12 h-12 rounded-full bg-indigo-500"></button>
-                        <button onclick="setThemeColor('purple')" data-color="purple" class="color-btn w-12 h-12 rounded-full bg-purple-500"></button>
-                        <button onclick="setThemeColor('pink')" data-color="pink" class="color-btn w-12 h-12 rounded-full bg-pink-500"></button>
-                        <button onclick="setThemeColor('cyan')" data-color="cyan" class="color-btn w-12 h-12 rounded-full bg-cyan-500"></button>
-                        <button onclick="setThemeColor('green')" data-color="green" class="color-btn w-12 h-12 rounded-full bg-green-500"></button>
-                        <button onclick="setThemeColor('orange')" data-color="orange" class="color-btn w-12 h-12 rounded-full bg-orange-500"></button>
-                        <button onclick="setThemeColor('red')" data-color="red" class="color-btn w-12 h-12 rounded-full bg-red-500"></button>
-                    </div>
-                </div>
-                
-                <!-- Exam Date -->
-                <div class="mb-8">
-                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Exam Date</h3>
-                    <div class="flex gap-3">
-                        <input type="date" id="newExamDate" class="flex-1 px-4 py-3 bg-white/5 rounded-xl border border-white/10 focus:border-indigo-500 transition-all outline-none">
-                        <button onclick="updateExamDate()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-xl font-medium transition-all">
-                            Update
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Reset Options -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Reset Options</h3>
-                    <div class="flex gap-3">
-                        <button onclick="resetProgress()" class="flex-1 p-3 bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 rounded-xl hover:bg-yellow-500/20 transition-all text-sm font-medium">
-                            Reset Progress
-                        </button>
-                        <button onclick="resetAll()" class="flex-1 p-3 bg-red-500/10 text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/20 transition-all text-sm font-medium">
-                            Reset Everything
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="text-center pt-6 border-t border-white/10">
-                    <p class="text-gray-500 text-sm">ICSE Planner v2.0</p>
-                </div>
+    <div id="settingsBackdrop" class="modal-backdrop" onclick="closeSettings()"></div>
+    <div id="settingsModal" class="modal">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold flex items-center gap-2">
+                <span>⚙️</span> Settings
+            </h2>
+            <button onclick="closeSettings()" class="p-2 hover:bg-white/10 rounded-lg transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Theme Mode -->
+        <div class="mb-6">
+            <label class="text-sm text-gray-400 mb-3 block">Theme Mode</label>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="setThemeMode('dark')" id="darkModeBtn" class="p-3 rounded-xl border border-gray-700 hover:border-indigo-500 transition flex items-center justify-center gap-2">
+                    <span>🌙</span> Dark
+                </button>
+                <button onclick="setThemeMode('light')" id="lightModeBtn" class="p-3 rounded-xl border border-gray-700 hover:border-yellow-500 transition flex items-center justify-center gap-2">
+                    <span>☀️</span> Light
+                </button>
             </div>
+        </div>
+
+        <!-- Accent Color -->
+        <div class="mb-6">
+            <label class="text-sm text-gray-400 mb-3 block">Accent Color</label>
+            <div class="flex gap-3 justify-center">
+                <button onclick="setThemeColor('indigo')" data-color="indigo" class="color-option w-10 h-10 rounded-full bg-indigo-500 transition hover:scale-110"></button>
+                <button onclick="setThemeColor('purple')" data-color="purple" class="color-option w-10 h-10 rounded-full bg-purple-500 transition hover:scale-110"></button>
+                <button onclick="setThemeColor('pink')" data-color="pink" class="color-option w-10 h-10 rounded-full bg-pink-500 transition hover:scale-110"></button>
+                <button onclick="setThemeColor('blue')" data-color="blue" class="color-option w-10 h-10 rounded-full bg-blue-500 transition hover:scale-110"></button>
+                <button onclick="setThemeColor('green')" data-color="green" class="color-option w-10 h-10 rounded-full bg-green-500 transition hover:scale-110"></button>
+                <button onclick="setThemeColor('orange')" data-color="orange" class="color-option w-10 h-10 rounded-full bg-orange-500 transition hover:scale-110"></button>
+            </div>
+        </div>
+
+        <!-- Exam Date -->
+        <div class="mb-6">
+            <label class="text-sm text-gray-400 mb-3 block">Exam Date</label>
+            <div class="flex gap-2">
+                <input type="date" id="newExamDate" class="flex-1 px-4 py-3 bg-white/5 rounded-xl border border-gray-700 focus:border-indigo-500 outline-none transition">
+                <button onclick="updateExamDate()" class="px-4 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-xl font-medium transition">
+                    Save
+                </button>
+            </div>
+        </div>
+
+        <!-- Reset -->
+        <div class="flex gap-3">
+            <button onclick="resetProgress()" class="flex-1 p-3 bg-yellow-500/10 text-yellow-400 rounded-xl hover:bg-yellow-500/20 transition text-sm font-medium">
+                Reset Progress
+            </button>
+            <button onclick="resetAll()" class="flex-1 p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition text-sm font-medium">
+                Reset All
+            </button>
         </div>
     </div>
 
-    <!-- Main App -->
-    <div id="app" class="relative z-10">
-        
+    <!-- App Container -->
+    <div id="app">
         <!-- Auth Page -->
         <div id="authPage" class="page active min-h-screen flex items-center justify-center p-4">
-            <div class="w-full max-w-md">
-                <!-- Logo -->
-                <div class="text-center mb-12 animate-slide-down" style="animation-delay: 0.1s">
-                    <div class="relative inline-block">
-                        <div class="absolute inset-0 bg-indigo-500/30 rounded-full blur-3xl scale-150 animate-pulse"></div>
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/CISCE_logo.png/150px-CISCE_logo.png" 
-                             alt="ICSE Logo" class="relative w-24 h-24 mx-auto rounded-full bg-white p-2 shadow-2xl pulse-ring">
-                    </div>
-                    <h1 class="text-5xl font-black font-display mt-8 gradient-text">ICSE Planner</h1>
-                    <p class="text-gray-400 mt-3 text-lg">Track Your Syllabus Like a Pro</p>
-                </div>
-                
-                <!-- Auth Card -->
-                <div class="glass-card rounded-3xl p-8 glow animate-slide-up" style="animation-delay: 0.3s">
-                    <div class="text-center mb-8">
-                        <h2 class="text-2xl font-bold font-display">Welcome Back! 👋</h2>
-                        <p class="text-gray-400 mt-2">Sign in to continue your journey</p>
-                    </div>
-                    
-                    <!-- Google Sign In -->
+            <div class="w-full max-w-md text-center">
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/CISCE_logo.png/150px-CISCE_logo.png" 
+                     alt="ICSE" class="w-20 h-20 mx-auto rounded-full bg-white p-2 shadow-xl mb-6">
+                <h1 class="text-4xl font-extrabold gradient-text mb-2">ICSE Planner</h1>
+                <p class="text-gray-400 mb-8">Track your syllabus, ace your exams</p>
+
+                <div class="card p-8">
                     <button onclick="signInWithGoogle()" id="googleSignInBtn" 
-                        class="ripple w-full py-4 px-6 bg-white text-gray-800 rounded-2xl font-semibold text-lg flex items-center justify-center gap-4 hover:bg-gray-100 transition-all hover:scale-[1.02] active:scale-[0.98]">
-                        <svg class="w-6 h-6" viewBox="0 0 24 24">
+                        class="w-full py-4 px-6 bg-white text-gray-800 rounded-xl font-semibold flex items-center justify-center gap-3 hover:bg-gray-100 transition">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                         </svg>
-                        <span>Continue with Google</span>
+                        Continue with Google
                     </button>
-                    
-                    <div id="authLoading" class="hidden w-full py-4 text-center">
-                        <div class="inline-flex items-center gap-3">
-                            <div class="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                            <span class="text-gray-400">Signing in...</span>
-                        </div>
+                    <div id="authLoading" class="hidden py-4">
+                        <div class="loader mx-auto w-8 h-8 border-2"></div>
                     </div>
-                    
-                    <div id="authError" class="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-center hidden"></div>
-                    
-                    <!-- Features -->
-                    <div class="mt-8 pt-8 border-t border-white/10">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="flex items-center gap-2 text-sm text-gray-400">
-                                <span class="w-5 h-5 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs">✓</span>
-                                Track all subjects
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-400">
-                                <span class="w-5 h-5 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs">✓</span>
-                                Exam countdown
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-400">
-                                <span class="w-5 h-5 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs">✓</span>
-                                Cloud sync
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-400">
-                                <span class="w-5 h-5 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs">✓</span>
-                                Custom themes
-                            </div>
-                        </div>
-                    </div>
+                    <div id="authError" class="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm hidden"></div>
+                </div>
+
+                <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm text-gray-500">
+                    <span>✓ Track Progress</span>
+                    <span>✓ Exam Timer</span>
+                    <span>✓ Cloud Sync</span>
+                    <span>✓ Bookmarks</span>
                 </div>
             </div>
         </div>
 
         <!-- Setup Page -->
         <div id="setupPage" class="page min-h-screen flex items-center justify-center p-4">
-            <div class="w-full max-w-2xl">
-                <div class="text-center mb-10 animate-slide-down">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 text-indigo-400 text-sm mb-4">
-                        <span>🎓</span> New Student Setup
-                    </div>
-                    <h1 class="text-4xl font-bold font-display">Welcome, <span id="setupUserName" class="gradient-text"></span>!</h1>
-                    <p class="text-gray-400 mt-2 text-lg">Let's personalize your experience</p>
+            <div class="w-full max-w-xl">
+                <div class="text-center mb-8">
+                    <span class="inline-block px-4 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-sm mb-4">Setup</span>
+                    <h1 class="text-3xl font-bold">Welcome, <span id="setupUserName" class="gradient-text"></span>!</h1>
+                    <p class="text-gray-400 mt-2">Let's set up your tracker</p>
                 </div>
-                
-                <div class="glass-card rounded-3xl p-8 glow animate-slide-up">
-                    <!-- Progress Steps -->
-                    <div class="flex items-center justify-center gap-2 mb-10">
-                        <div id="stepDot1" class="w-3 h-3 rounded-full bg-indigo-500 transition-all"></div>
-                        <div class="w-16 h-0.5 bg-white/10 rounded">
-                            <div id="stepLine1" class="h-full bg-indigo-500 rounded transition-all duration-500" style="width: 0%"></div>
-                        </div>
-                        <div id="stepDot2" class="w-3 h-3 rounded-full bg-white/20 transition-all"></div>
-                        <div class="w-16 h-0.5 bg-white/10 rounded">
-                            <div id="stepLine2" class="h-full bg-indigo-500 rounded transition-all duration-500" style="width: 0%"></div>
-                        </div>
-                        <div id="stepDot3" class="w-3 h-3 rounded-full bg-white/20 transition-all"></div>
-                    </div>
-                    
-                    <!-- Step 1: Stream -->
+
+                <div class="card p-8">
+                    <!-- Step 1 -->
                     <div id="step1" class="step">
-                        <h2 class="text-2xl font-bold font-display text-center mb-2">Choose Your Stream</h2>
-                        <p class="text-gray-400 text-center mb-8">Select your academic path for Class 10</p>
-                        <div class="grid grid-cols-2 gap-6">
-                            <button onclick="selectStream('science')" class="group p-8 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition-all hover-lift bg-white/5 text-left">
-                                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🔬</div>
-                                <h3 class="text-xl font-bold">Science</h3>
-                                <p class="text-sm text-gray-400 mt-1">Physics, Chemistry, Biology/Math</p>
+                        <h2 class="text-xl font-bold text-center mb-6">Choose Your Stream</h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="selectStream('science')" class="p-6 rounded-xl border border-gray-700 hover:border-indigo-500 transition text-left group">
+                                <div class="text-4xl mb-3 group-hover:scale-110 transition">🔬</div>
+                                <h3 class="font-bold">Science</h3>
+                                <p class="text-xs text-gray-500">Physics, Chemistry, Biology, Math</p>
                             </button>
-                            <button onclick="selectStream('commerce')" class="group p-8 rounded-2xl border border-white/10 hover:border-purple-500/50 transition-all hover-lift bg-white/5 text-left">
-                                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">📊</div>
-                                <h3 class="text-xl font-bold">Commerce</h3>
-                                <p class="text-sm text-gray-400 mt-1">Commercial Studies, Economics</p>
+                            <button onclick="selectStream('commerce')" class="p-6 rounded-xl border border-gray-700 hover:border-purple-500 transition text-left group">
+                                <div class="text-4xl mb-3 group-hover:scale-110 transition">📊</div>
+                                <h3 class="font-bold">Commerce</h3>
+                                <p class="text-xs text-gray-500">Commercial Studies, Economics</p>
                             </button>
                         </div>
                     </div>
-                    
-                    <!-- Step 2: Optional -->
+
+                    <!-- Step 2 -->
                     <div id="step2" class="step hidden">
-                        <h2 class="text-2xl font-bold font-display text-center mb-2">Choose Your Optional</h2>
-                        <p class="text-gray-400 text-center mb-8">Select your Group 3 subject</p>
-                        <div class="grid grid-cols-3 gap-4">
-                            <button onclick="selectOptional('computer')" class="group p-6 rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-all hover-lift bg-white/5 text-center">
-                                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">💻</div>
-                                <h3 class="font-bold">Computer</h3>
-                                <p class="text-xs text-gray-400 mt-1">Java Programming</p>
+                        <h2 class="text-xl font-bold text-center mb-6">Choose Your Optional</h2>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button onclick="selectOptional('computer')" class="p-4 rounded-xl border border-gray-700 hover:border-cyan-500 transition text-center group">
+                                <div class="text-3xl mb-2 group-hover:scale-110 transition">💻</div>
+                                <h3 class="font-semibold text-sm">Computer</h3>
                             </button>
-                            <button onclick="selectOptional('pe')" class="group p-6 rounded-2xl border border-white/10 hover:border-green-500/50 transition-all hover-lift bg-white/5 text-center">
-                                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">⚽</div>
-                                <h3 class="font-bold">Physical Ed</h3>
-                                <p class="text-xs text-gray-400 mt-1">Sports & Fitness</p>
+                            <button onclick="selectOptional('pe')" class="p-4 rounded-xl border border-gray-700 hover:border-green-500 transition text-center group">
+                                <div class="text-3xl mb-2 group-hover:scale-110 transition">⚽</div>
+                                <h3 class="font-semibold text-sm">Physical Ed</h3>
                             </button>
-                            <button onclick="selectOptional('art')" class="group p-6 rounded-2xl border border-white/10 hover:border-pink-500/50 transition-all hover-lift bg-white/5 text-center">
-                                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">🎨</div>
-                                <h3 class="font-bold">Art</h3>
-                                <p class="text-xs text-gray-400 mt-1">Drawing & Design</p>
+                            <button onclick="selectOptional('art')" class="p-4 rounded-xl border border-gray-700 hover:border-pink-500 transition text-center group">
+                                <div class="text-3xl mb-2 group-hover:scale-110 transition">🎨</div>
+                                <h3 class="font-semibold text-sm">Art</h3>
                             </button>
                         </div>
-                        <button onclick="goBackToStep1()" class="mt-8 flex items-center gap-2 text-gray-400 hover:text-white transition-all mx-auto">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                            Go Back
+                        <button onclick="goBackToStep1()" class="mt-6 text-sm text-gray-400 hover:text-white transition flex items-center gap-1 mx-auto">
+                            ← Go Back
                         </button>
                     </div>
-                    
-                    <!-- Step 3: Exam Date -->
+
+                    <!-- Step 3 -->
                     <div id="step3" class="step hidden">
-                        <h2 class="text-2xl font-bold font-display text-center mb-2">When is Your Exam?</h2>
-                        <p class="text-gray-400 text-center mb-8">We'll show you a countdown timer</p>
-                        <div class="max-w-sm mx-auto space-y-6">
-                            <input type="date" id="examDate" class="w-full px-6 py-4 bg-white/5 rounded-2xl border border-white/10 focus:border-indigo-500 transition-all text-center text-lg outline-none">
-                            <div id="examPreview" class="text-center text-gray-400 hidden">
-                                <span id="examPreviewText"></span>
-                            </div>
-                            <button onclick="completeSetup()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl font-bold text-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
-                                <span>🚀</span> Start Tracking!
-                            </button>
-                        </div>
-                        <button onclick="goBackToStep2()" class="mt-8 flex items-center gap-2 text-gray-400 hover:text-white transition-all mx-auto">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                            Go Back
+                        <h2 class="text-xl font-bold text-center mb-6">When is Your Exam?</h2>
+                        <input type="date" id="examDate" class="w-full px-4 py-4 bg-white/5 rounded-xl border border-gray-700 focus:border-indigo-500 outline-none transition text-center text-lg mb-4">
+                        <button onclick="completeSetup()" class="btn-primary w-full py-4 rounded-xl font-bold text-lg">
+                            <span>🚀 Start Tracking</span>
+                        </button>
+                        <button onclick="goBackToStep2()" class="mt-4 text-sm text-gray-400 hover:text-white transition flex items-center gap-1 mx-auto">
+                            ← Go Back
                         </button>
                     </div>
                 </div>
@@ -795,37 +629,29 @@
         <!-- Dashboard Page -->
         <div id="dashboardPage" class="page">
             <!-- Header -->
-            <header class="sticky top-0 z-40 glass-card border-b border-white/5">
-                <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/CISCE_logo.png/150px-CISCE_logo.png" 
-                             alt="ICSE" class="w-10 h-10 rounded-full bg-white p-1">
-                        <h1 class="text-xl font-bold font-display gradient-text hidden md:block">ICSE Planner</h1>
-                    </div>
-                    
-                    <!-- Search -->
-                    <div class="flex-1 max-w-md mx-4 hidden md:block">
-                        <div class="relative">
-                            <input type="text" id="searchInput" placeholder="Search chapters..." 
-                                class="search-input w-full px-4 py-2 pl-10 rounded-xl outline-none text-sm" onkeyup="searchChapters()">
-                            <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    
+            <header class="sticky top-0 z-40 bg-[#0f0f1a]/80 backdrop-blur-lg border-b border-gray-800">
+                <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <button onclick="openSettings()" class="p-2 hover:bg-white/10 rounded-xl transition-all" title="Settings">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/CISCE_logo.png/150px-CISCE_logo.png" 
+                             alt="ICSE" class="w-9 h-9 rounded-full bg-white p-0.5">
+                        <h1 class="text-lg font-bold gradient-text hidden sm:block">ICSE Planner</h1>
+                    </div>
+
+                    <div class="flex-1 max-w-md mx-4 hidden md:block">
+                        <input type="text" id="searchInput" placeholder="Search chapters..." 
+                            class="w-full px-4 py-2 bg-white/5 rounded-xl border border-gray-700 focus:border-indigo-500 outline-none text-sm transition"
+                            oninput="searchChapters()">
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="openSettings()" class="p-2 hover:bg-white/10 rounded-lg transition" title="Settings">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                         </button>
-                        <div class="flex items-center gap-3">
-                            <img id="userPhoto" src="" alt="" class="w-9 h-9 rounded-full border-2 border-indigo-500 hidden">
-                            <span id="userName" class="text-sm font-medium hidden md:block text-gray-300"></span>
-                        </div>
-                        <button onclick="logout()" class="p-2 hover:bg-red-500/20 text-red-400 rounded-xl transition-all" title="Logout">
+                        <img id="userPhoto" src="" alt="" class="w-8 h-8 rounded-full border-2 border-indigo-500 hidden">
+                        <button onclick="logout()" class="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition" title="Logout">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
@@ -834,162 +660,105 @@
                 </div>
             </header>
 
-            <main class="container mx-auto px-4 py-8 max-w-7xl">
-                <!-- Exam Timer -->
-                <div class="glass-card rounded-3xl p-8 mb-8 glow animate-blur-in relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                    <div class="relative">
-                        <div class="flex items-center justify-center gap-2 mb-6">
-                            <span class="text-2xl">⏱️</span>
-                            <h2 class="text-lg text-gray-400 font-medium">Time Until Exams</h2>
-                        </div>
-                        <div id="examTimer" class="flex justify-center gap-3 md:gap-6 flex-wrap">
-                            <div class="timer-card rounded-2xl p-4 md:p-6 min-w-[80px] md:min-w-[110px] text-center">
-                                <div id="timerDays" class="timer-value text-4xl md:text-5xl font-black font-display">00</div>
-                                <div class="text-xs text-gray-400 mt-2 uppercase tracking-wider">Days</div>
-                            </div>
-                            <div class="timer-card rounded-2xl p-4 md:p-6 min-w-[80px] md:min-w-[110px] text-center">
-                                <div id="timerHours" class="timer-value text-4xl md:text-5xl font-black font-display">00</div>
-                                <div class="text-xs text-gray-400 mt-2 uppercase tracking-wider">Hours</div>
-                            </div>
-                            <div class="timer-card rounded-2xl p-4 md:p-6 min-w-[80px] md:min-w-[110px] text-center">
-                                <div id="timerMinutes" class="timer-value text-4xl md:text-5xl font-black font-display">00</div>
-                                <div class="text-xs text-gray-400 mt-2 uppercase tracking-wider">Minutes</div>
-                            </div>
-                            <div class="timer-card rounded-2xl p-4 md:p-6 min-w-[80px] md:min-w-[110px] text-center">
-                                <div id="timerSeconds" class="timer-value text-4xl md:text-5xl font-black font-display">00</div>
-                                <div class="text-xs text-gray-400 mt-2 uppercase tracking-wider">Seconds</div>
-                            </div>
-                        </div>
-                        <p id="examDateDisplay" class="text-center text-gray-500 mt-6"></p>
+            <main class="container mx-auto px-4 py-6 max-w-6xl">
+                <!-- Timer -->
+                <div class="card p-6 mb-6">
+                    <div class="text-center mb-4">
+                        <span class="text-gray-400">⏱️ Time Until Exams</span>
                     </div>
+                    <div class="flex justify-center gap-3 flex-wrap">
+                        <div class="timer-box">
+                            <div id="timerDays" class="timer-value">00</div>
+                            <div class="text-xs text-gray-400 mt-1">Days</div>
+                        </div>
+                        <div class="timer-box">
+                            <div id="timerHours" class="timer-value">00</div>
+                            <div class="text-xs text-gray-400 mt-1">Hours</div>
+                        </div>
+                        <div class="timer-box">
+                            <div id="timerMinutes" class="timer-value">00</div>
+                            <div class="text-xs text-gray-400 mt-1">Minutes</div>
+                        </div>
+                        <div class="timer-box">
+                            <div id="timerSeconds" class="timer-value">00</div>
+                            <div class="text-xs text-gray-400 mt-1">Seconds</div>
+                        </div>
+                    </div>
+                    <p id="examDateDisplay" class="text-center text-gray-500 text-sm mt-4"></p>
                 </div>
 
-                <!-- Stats Grid -->
-                <div class="grid md:grid-cols-3 gap-6 mb-8 stagger-in">
-                    <!-- Overall Progress -->
-                    <div class="stat-card glass-card rounded-2xl p-6 hover-lift" style="animation-delay: 0.1s">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm text-gray-400 mb-1">Overall Progress</p>
-                                <p id="overallProgress" class="text-4xl font-black font-display gradient-text">0%</p>
-                                <p class="text-xs text-gray-500 mt-1">of syllabus completed</p>
-                            </div>
-                            <svg class="w-20 h-20" viewBox="0 0 36 36">
-                                <defs>
-                                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#6366f1"/>
-                                        <stop offset="100%" stop-color="#a855f7"/>
-                                    </linearGradient>
-                                </defs>
-                                <circle class="progress-ring-bg" cx="18" cy="18" r="15.5" fill="none" stroke-width="3"/>
-                                <circle id="progressRing" class="progress-ring-fill" cx="18" cy="18" r="15.5" fill="none" stroke-width="3"
-                                    stroke-dasharray="0 100" transform="rotate(-90 18 18)"/>
-                            </svg>
-                        </div>
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="card p-4 text-center">
+                        <div class="text-3xl font-bold gradient-text" id="overallProgress">0%</div>
+                        <div class="text-xs text-gray-400 mt-1">Progress</div>
                     </div>
-                    
-                    <!-- Chapters -->
-                    <div class="stat-card glass-card rounded-2xl p-6 hover-lift" style="animation-delay: 0.2s">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center text-2xl">📚</div>
-                            <div>
-                                <p class="text-sm text-gray-400 mb-1">Chapters Done</p>
-                                <p id="chaptersCompleted" class="text-3xl font-black font-display text-green-400">0/0</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div id="chaptersBar" class="h-full bg-gradient-to-r from-green-500 to-emerald-400 transition-all duration-1000" style="width: 0%"></div>
-                        </div>
+                    <div class="card p-4 text-center">
+                        <div class="text-3xl font-bold text-green-400" id="chaptersCompleted">0</div>
+                        <div class="text-xs text-gray-400 mt-1">Completed</div>
                     </div>
-                    
-                    <!-- Stream Info -->
-                    <div class="stat-card glass-card rounded-2xl p-6 hover-lift" style="animation-delay: 0.3s">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center text-2xl" id="streamIcon">🔬</div>
-                            <div>
-                                <p class="text-sm text-gray-400 mb-1">Your Stream</p>
-                                <p id="streamDisplay" class="text-2xl font-black font-display text-purple-400">Science</p>
-                                <p id="optionalDisplay" class="text-xs text-gray-500"></p>
-                            </div>
-                        </div>
+                    <div class="card p-4 text-center">
+                        <div class="text-3xl font-bold text-yellow-400" id="chaptersBookmarked">0</div>
+                        <div class="text-xs text-gray-400 mt-1">Bookmarked</div>
+                    </div>
+                    <div class="card p-4 text-center">
+                        <div class="text-3xl font-bold text-purple-400" id="totalChapters">0</div>
+                        <div class="text-xs text-gray-400 mt-1">Total Chapters</div>
                     </div>
                 </div>
 
                 <!-- Filters -->
                 <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                    <h2 class="text-2xl font-bold font-display flex items-center gap-3">
-                        <span class="text-3xl">📖</span> Your Syllabus
-                    </h2>
+                    <h2 class="text-xl font-bold">📚 Your Syllabus</h2>
                     <div class="flex gap-2">
-                        <button onclick="filterChapters('all')" class="filter-btn active px-4 py-2 rounded-xl text-sm font-medium bg-white/5 border border-white/10 transition-all" data-filter="all">
-                            All
-                        </button>
-                        <button onclick="filterChapters('pending')" class="filter-btn px-4 py-2 rounded-xl text-sm font-medium bg-white/5 border border-white/10 transition-all" data-filter="pending">
-                            Pending
-                        </button>
-                        <button onclick="filterChapters('completed')" class="filter-btn px-4 py-2 rounded-xl text-sm font-medium bg-white/5 border border-white/10 transition-all" data-filter="completed">
-                            Completed
-                        </button>
+                        <button onclick="setFilter('all')" class="filter-btn active" data-filter="all">All</button>
+                        <button onclick="setFilter('pending')" class="filter-btn" data-filter="pending">Pending</button>
+                        <button onclick="setFilter('completed')" class="filter-btn" data-filter="completed">Done</button>
+                        <button onclick="setFilter('bookmarked')" class="filter-btn" data-filter="bookmarked">⭐</button>
                     </div>
                 </div>
 
-                <!-- Syllabus Container -->
-                <div id="syllabusContainer" class="space-y-4">
-                    <!-- Subjects will be loaded here -->
-                </div>
+                <!-- Syllabus -->
+                <div id="syllabusContainer" class="space-y-4"></div>
 
                 <!-- Milestones -->
-                <div id="milestonesSection" class="mt-12 hidden">
-                    <h3 class="text-xl font-bold font-display mb-6 flex items-center gap-3">
-                        <span class="text-2xl">🏆</span> Milestones
-                    </h3>
-                    <div id="milestonesContainer" class="flex flex-wrap gap-4">
-                        <!-- Milestones will be loaded here -->
-                    </div>
+                <div class="mt-8">
+                    <h3 class="text-lg font-bold mb-4">🏆 Milestones</h3>
+                    <div id="milestonesContainer" class="flex flex-wrap gap-3"></div>
                 </div>
             </main>
 
             <!-- Footer -->
-            <footer class="glass-card border-t border-white/5 mt-16 py-8">
-                <div class="container mx-auto px-4 text-center">
-                    <div class="flex items-center justify-center gap-2 mb-4">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/CISCE_logo.png/150px-CISCE_logo.png" 
-                             alt="CISCE" class="w-6 h-6 rounded-full bg-white p-0.5 opacity-50">
-                        <span class="text-gray-500 text-sm">ICSE Planner</span>
-                    </div>
-                    <p class="text-gray-500 text-sm mb-2">
-                        ⚠️ <strong>Disclaimer:</strong> This site is <strong>NOT</strong> affiliated to CISCE.
-                    </p>
-                    <p class="text-gray-600 text-xs">Made with ❤️ for ICSE Students</p>
+            <footer class="border-t border-gray-800 mt-12 py-6">
+                <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+                    <p class="mb-2">⚠️ <strong>Disclaimer:</strong> This site is <strong>NOT</strong> affiliated to CISCE.</p>
+                    <p>Made with ❤️ for ICSE Students</p>
                 </div>
             </footer>
         </div>
     </div>
 
     <script>
-        // Firebase Configuration
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCqSu-4wkbFNpRINLlHo5sWGM-bPY-MBvM",
             authDomain: "icse-syllabus-tracker.firebaseapp.com",
             projectId: "icse-syllabus-tracker",
             storageBucket: "icse-syllabus-tracker.firebasestorage.app",
             messagingSenderId: "925688497446",
-            appId: "1:925688497446:web:17823893ee2350942c2de7",
-            measurementId: "G-17BGSZT6DD"
+            appId: "1:925688497446:web:17823893ee2350942c2de7"
         };
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
 
         // Syllabus Data
         const syllabusData = {
             common: {
                 "English Language": {
                     icon: "📝",
-                    color: "from-blue-500 to-cyan-500",
+                    color: "#3b82f6",
                     chapters: [
                         "Essay Writing", "Letter Writing (Formal & Informal)", "Notice Writing", "Email Writing",
                         "Comprehension Passage", "Tenses", "Prepositions", "Conjunctions", "Modals",
@@ -999,7 +768,7 @@
                 },
                 "English Literature": {
                     icon: "📖",
-                    color: "from-indigo-500 to-purple-500",
+                    color: "#8b5cf6",
                     chapters: [
                         "Julius Caesar - Act III", "Julius Caesar - Act IV", "Julius Caesar - Act V",
                         "With the Photographer – Stephen Leacock", "The Elevator – William Sleator",
@@ -1011,13 +780,14 @@
                 },
                 "Hindi": {
                     icon: "🔤",
-                    color: "from-orange-500 to-amber-500",
+                    color: "#f97316",
                     chapters: [
                         "गद्य - बात अठन्नी की", "गद्य - काकी", "गद्य - महायज्ञ का पुरस्कार", "गद्य - नेताजी का चश्मा",
                         "गद्य - अपना-अपना भाग्य", "गद्य - बड़े घर की बेटी", "गद्य - संदेह", "गद्य - भीड़ में खोया आदमी",
-                        "गद्य - भेड़ें और भेड़िये", "गद्य - दो कलाकार", "पद्य - साखी", "पद्य - कुंडलियाँ",
-                        "पद्य - स्वर्ग बना सकते हैं", "पद्य - वह मातृभूमि मेरी", "पद्य - मेघ आए", "पद्य - सूर के पद",
-                        "पद्य - विनय के पद", "पद्य - भिक्षुक", "पद्य - चलना हमारा काम है", "पद्य - मातृ मंदिर की ओर",
+                        "गद्य - भेड़ें और भेड़िये", "गद्य - दो कलाकार",
+                        "पद्य - साखी", "पद्य - कुंडलियाँ", "पद्य - स्वर्ग बना सकते हैं", "पद्य - वह मातृभूमि मेरी",
+                        "पद्य - मेघ आए", "पद्य - सूर के पद", "पद्य - विनय के पद", "पद्य - भिक्षुक",
+                        "पद्य - चलना हमारा काम है", "पद्य - मातृ मंदिर की ओर",
                         "एकांकी - संस्कार और भावना", "एकांकी - बहू की विदा", "एकांकी - मातृभूमि का मान",
                         "एकांकी - सूखी डाली", "एकांकी - महाभारत की एक साँझ", "एकांकी - दीपदान",
                         "व्याकरण - संधि", "व्याकरण - समास", "व्याकरण - मुहावरे और लोकोक्तियाँ",
@@ -1026,7 +796,7 @@
                 },
                 "History & Civics": {
                     icon: "🏛️",
-                    color: "from-amber-500 to-yellow-500",
+                    color: "#eab308",
                     chapters: [
                         "The First War of Independence 1857", "Growth of Nationalism",
                         "First Phase of Indian National Movement (1885-1907)",
@@ -1039,7 +809,7 @@
                 },
                 "Geography": {
                     icon: "🌍",
-                    color: "from-green-500 to-emerald-500",
+                    color: "#22c55e",
                     chapters: [
                         "Map Work", "Location, Extent and Physical Features of India", "Climate of India",
                         "Soil Resources", "Natural Vegetation", "Water Resources", "Mineral and Energy Resources",
@@ -1050,7 +820,7 @@
             science: {
                 "Physics": {
                     icon: "⚛️",
-                    color: "from-cyan-500 to-blue-500",
+                    color: "#06b6d4",
                     chapters: [
                         "Force, Work, Power and Energy", "Simple Machines", "Calorimetry",
                         "Refraction of Light at Plane Surfaces", "Refraction through a Lens", "Spectrum",
@@ -1060,7 +830,7 @@
                 },
                 "Chemistry": {
                     icon: "🧪",
-                    color: "from-purple-500 to-violet-500",
+                    color: "#a855f7",
                     chapters: [
                         "Periodic Table and Periodicity of Properties", "Chemical Bonding",
                         "Study of Acids, Bases and Salts", "Analytical Chemistry",
@@ -1072,7 +842,7 @@
                 },
                 "Biology": {
                     icon: "🧬",
-                    color: "from-emerald-500 to-green-500",
+                    color: "#10b981",
                     chapters: [
                         "Cell Division", "Genetics", "Human Evolution", "Absorption by Roots",
                         "Transpiration", "Photosynthesis", "Chemical Coordination in Plants",
@@ -1082,7 +852,7 @@
                 },
                 "Mathematics": {
                     icon: "📐",
-                    color: "from-red-500 to-rose-500",
+                    color: "#ef4444",
                     chapters: [
                         "GST (Goods and Services Tax)", "Banking", "Shares and Dividends",
                         "Linear Inequations", "Quadratic Equations", "Ratio and Proportion",
@@ -1096,7 +866,7 @@
             commerce: {
                 "Commercial Studies": {
                     icon: "💼",
-                    color: "from-slate-500 to-gray-500",
+                    color: "#64748b",
                     chapters: [
                         "Introduction to Business", "Forms of Business Organizations", "Trade",
                         "Banking Services", "Insurance", "Transport", "Communication", "Warehousing",
@@ -1105,7 +875,7 @@
                 },
                 "Economics": {
                     icon: "📈",
-                    color: "from-teal-500 to-cyan-500",
+                    color: "#14b8a6",
                     chapters: [
                         "Introduction to Economics", "Types of Economies", "Demand and Supply",
                         "Price Determination", "Elasticity of Demand", "National Income",
@@ -1115,7 +885,7 @@
                 },
                 "Mathematics (Commerce)": {
                     icon: "🔢",
-                    color: "from-pink-500 to-rose-500",
+                    color: "#ec4899",
                     chapters: [
                         "GST (Goods and Services Tax)", "Banking", "Shares and Dividends",
                         "Linear Inequations", "Quadratic Equations", "Ratio and Proportion",
@@ -1128,7 +898,7 @@
                 computer: {
                     "Computer Applications": {
                         icon: "💻",
-                        color: "from-cyan-500 to-blue-500",
+                        color: "#0ea5e9",
                         chapters: [
                             "Introduction to Object Oriented Programming", "Elementary Concepts of Objects and Classes",
                             "Values and Data Types", "Operators in Java", "Input in Java",
@@ -1141,7 +911,7 @@
                 pe: {
                     "Physical Education": {
                         icon: "🏃",
-                        color: "from-lime-500 to-green-500",
+                        color: "#84cc16",
                         chapters: [
                             "Health and Physical Fitness", "First Aid", "Personal Hygiene",
                             "Sports and Nutrition", "Posture and Postural Deformities", "Safety in Sports",
@@ -1152,7 +922,7 @@
                 art: {
                     "Art": {
                         icon: "🎨",
-                        color: "from-rose-500 to-pink-500",
+                        color: "#f43f5e",
                         chapters: [
                             "Fundamentals of Art and Design", "Elements of Art", "Principles of Design",
                             "Color Theory", "Perspective Drawing", "Still Life Drawing", "Nature Study",
@@ -1167,76 +937,33 @@
         // State
         let currentUser = null;
         let userData = {
-            name: '', email: '', photoURL: '', stream: '', optional: '', examDate: '',
-            progress: {}, settings: { theme: 'dark', color: 'indigo' }
+            stream: '', optional: '', examDate: '',
+            progress: {}, bookmarks: {},
+            settings: { theme: 'dark', color: 'indigo' }
         };
         let currentFilter = 'all';
+        let openSubjects = {};
 
-        // Initialize particles
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
-                particle.style.animationDelay = Math.random() * 10 + 's';
-                particle.style.width = (Math.random() * 4 + 2) + 'px';
-                particle.style.height = particle.style.width;
-                container.appendChild(particle);
-            }
-        }
-
-        // Ripple effect
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('ripple')) {
-                const rect = e.target.getBoundingClientRect();
-                const ripple = document.createElement('span');
-                ripple.className = 'ripple-effect';
-                ripple.style.left = (e.clientX - rect.left) + 'px';
-                ripple.style.top = (e.clientY - rect.top) + 'px';
-                e.target.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 600);
-            }
-        });
-
-        // Initialize
+        // Init
         document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            
-            const savedSettings = localStorage.getItem('icse_settings');
-            if (savedSettings) applySettings(JSON.parse(savedSettings));
-            
-            document.getElementById('examDate').addEventListener('change', (e) => {
-                const preview = document.getElementById('examPreview');
-                const text = document.getElementById('examPreviewText');
-                if (e.target.value) {
-                    const date = new Date(e.target.value);
-                    preview.classList.remove('hidden');
-                    text.textContent = '📅 ' + date.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                }
-            });
+            const saved = localStorage.getItem('icse_settings');
+            if (saved) applySettings(JSON.parse(saved));
 
             setTimeout(() => {
                 document.getElementById('loadingScreen').style.opacity = '0';
-                setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 500);
-            }, 2000);
+                setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 300);
+            }, 1000);
 
-            auth.onAuthStateChanged(async (user) => {
+            auth.onAuthStateChanged(async user => {
                 if (user) {
                     currentUser = user;
-                    userData.name = user.displayName || 'Student';
-                    userData.email = user.email;
-                    userData.photoURL = user.photoURL || '';
-                    
                     await loadUserData();
-                    
                     if (userData.stream && userData.optional && userData.examDate) {
                         showPage('dashboardPage');
                         renderDashboard();
                         startTimer();
                     } else {
-                        document.getElementById('setupUserName').textContent = userData.name.split(' ')[0];
+                        document.getElementById('setupUserName').textContent = user.displayName?.split(' ')[0] || 'Student';
                         showPage('setupPage');
                     }
                 } else {
@@ -1245,28 +972,24 @@
             });
         });
 
-        // Auth functions
+        // Auth
         async function signInWithGoogle() {
             const btn = document.getElementById('googleSignInBtn');
             const loading = document.getElementById('authLoading');
-            
+            btn.classList.add('hidden');
+            loading.classList.remove('hidden');
             try {
-                btn.classList.add('hidden');
-                loading.classList.remove('hidden');
-                await auth.signInWithPopup(googleProvider);
-                createConfetti();
-            } catch (error) {
+                await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            } catch (e) {
                 btn.classList.remove('hidden');
                 loading.classList.add('hidden');
-                const errorDiv = document.getElementById('authError');
-                errorDiv.textContent = error.message;
-                errorDiv.classList.remove('hidden');
-                setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+                document.getElementById('authError').textContent = e.message;
+                document.getElementById('authError').classList.remove('hidden');
             }
         }
 
         async function logout() {
-            if (confirm('Are you sure you want to logout?')) {
+            if (confirm('Logout?')) {
                 await auth.signOut();
                 showPage('authPage');
                 document.getElementById('googleSignInBtn').classList.remove('hidden');
@@ -1274,209 +997,177 @@
             }
         }
 
-        // Data functions
+        // Data
         async function loadUserData() {
             try {
                 const doc = await db.collection('users').doc(currentUser.uid).get();
-                if (doc.exists) {
-                    userData = { ...userData, ...doc.data() };
-                    if (userData.settings) applySettings(userData.settings);
-                }
-            } catch (error) {
-                const local = localStorage.getItem('icse_userData_' + currentUser.uid);
-                if (local) {
-                    userData = { ...userData, ...JSON.parse(local) };
-                    if (userData.settings) applySettings(userData.settings);
-                }
-            }
+                if (doc.exists) userData = { ...userData, ...doc.data() };
+            } catch (e) {}
+            const local = localStorage.getItem('icse_user_' + currentUser.uid);
+            if (local) userData = { ...userData, ...JSON.parse(local) };
+            if (userData.settings) applySettings(userData.settings);
         }
 
         async function saveUserData() {
-            try {
-                await db.collection('users').doc(currentUser.uid).set(userData, { merge: true });
-            } catch (error) {}
-            localStorage.setItem('icse_userData_' + currentUser.uid, JSON.stringify(userData));
+            try { await db.collection('users').doc(currentUser.uid).set(userData, { merge: true }); } catch (e) {}
+            localStorage.setItem('icse_user_' + currentUser.uid, JSON.stringify(userData));
         }
 
-        // Page navigation
-        function showPage(pageId) {
+        // Pages
+        function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            document.getElementById(id).classList.add('active');
         }
 
-        // Setup functions
-        function selectStream(stream) {
-            userData.stream = stream;
-            document.getElementById('stepLine1').style.width = '100%';
-            document.getElementById('stepDot2').classList.add('bg-indigo-500');
-            document.getElementById('stepDot2').classList.remove('bg-white/20');
-            setTimeout(() => {
-                document.getElementById('step1').classList.add('hidden');
-                document.getElementById('step2').classList.remove('hidden');
-            }, 300);
+        // Setup
+        function selectStream(s) {
+            userData.stream = s;
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
         }
 
-        function selectOptional(optional) {
-            userData.optional = optional;
-            document.getElementById('stepLine2').style.width = '100%';
-            document.getElementById('stepDot3').classList.add('bg-indigo-500');
-            document.getElementById('stepDot3').classList.remove('bg-white/20');
-            setTimeout(() => {
-                document.getElementById('step2').classList.add('hidden');
-                document.getElementById('step3').classList.remove('hidden');
-                const next = new Date().getFullYear() + 1;
-                document.getElementById('examDate').value = `${next}-03-01`;
-                document.getElementById('examDate').dispatchEvent(new Event('change'));
-            }, 300);
+        function selectOptional(o) {
+            userData.optional = o;
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+            document.getElementById('examDate').value = `${new Date().getFullYear() + 1}-03-01`;
         }
 
         function goBackToStep1() {
             document.getElementById('step2').classList.add('hidden');
             document.getElementById('step1').classList.remove('hidden');
-            document.getElementById('stepLine1').style.width = '0%';
-            document.getElementById('stepDot2').classList.remove('bg-indigo-500');
-            document.getElementById('stepDot2').classList.add('bg-white/20');
         }
 
         function goBackToStep2() {
             document.getElementById('step3').classList.add('hidden');
             document.getElementById('step2').classList.remove('hidden');
-            document.getElementById('stepLine2').style.width = '0%';
-            document.getElementById('stepDot3').classList.remove('bg-indigo-500');
-            document.getElementById('stepDot3').classList.add('bg-white/20');
         }
 
         async function completeSetup() {
-            const examDate = document.getElementById('examDate').value;
-            if (!examDate) return alert('Please select your exam date!');
-            userData.examDate = examDate;
+            const date = document.getElementById('examDate').value;
+            if (!date) return alert('Select exam date!');
+            userData.examDate = date;
             await saveUserData();
-            createConfetti();
             showPage('dashboardPage');
             renderDashboard();
             startTimer();
+            createConfetti();
         }
 
         // Dashboard
         function renderDashboard() {
-            document.getElementById('userName').textContent = userData.name;
             const photo = document.getElementById('userPhoto');
-            if (userData.photoURL) {
-                photo.src = userData.photoURL;
+            if (currentUser.photoURL) {
+                photo.src = currentUser.photoURL;
                 photo.classList.remove('hidden');
             }
-            
-            const streamCapitalized = userData.stream.charAt(0).toUpperCase() + userData.stream.slice(1);
-            document.getElementById('streamDisplay').textContent = streamCapitalized;
-            document.getElementById('streamIcon').textContent = userData.stream === 'science' ? '🔬' : '📊';
-            
-            const optionalNames = { computer: 'Computer Applications', pe: 'Physical Education', art: 'Art' };
-            document.getElementById('optionalDisplay').textContent = '+ ' + optionalNames[userData.optional];
-            
             renderSyllabus();
             renderMilestones();
         }
 
+        function getSubjects() {
+            const subjects = [];
+            Object.entries(syllabusData.common).forEach(([n, d]) => subjects.push({ name: n, ...d }));
+            if (userData.stream && syllabusData[userData.stream]) {
+                Object.entries(syllabusData[userData.stream]).forEach(([n, d]) => subjects.push({ name: n, ...d }));
+            }
+            if (userData.optional && syllabusData.optional[userData.optional]) {
+                Object.entries(syllabusData.optional[userData.optional]).forEach(([n, d]) => subjects.push({ name: n, ...d }));
+            }
+            return subjects;
+        }
+
         function renderSyllabus() {
-            const subjects = getSubjectsForUser();
+            const subjects = getSubjects();
             const container = document.getElementById('syllabusContainer');
             container.innerHTML = '';
-            
-            console.log('Rendering syllabus, subjects count:', subjects.length);
-            
-            if (subjects.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-400 py-8">No subjects found. Please complete setup first.</p>';
-                return;
-            }
 
-            let total = 0, completed = 0;
+            let total = 0, completed = 0, bookmarked = 0;
 
             subjects.forEach((subject, idx) => {
-                const id = subject.name.replace(/\s+/g, '_').replace(/[()]/g, '');
+                const id = subject.name.replace(/[^a-zA-Z0-9]/g, '_');
                 const chapters = subject.chapters;
                 const done = chapters.filter((_, i) => userData.progress[`${id}_${i}`]).length;
+                const pct = Math.round((done / chapters.length) * 100);
                 total += chapters.length;
                 completed += done;
-                const pct = Math.round((done / chapters.length) * 100);
 
-                const filteredChapters = chapters.map((ch, i) => ({ ch, i, done: userData.progress[`${id}_${i}`] }))
-                    .filter(c => currentFilter === 'all' || (currentFilter === 'completed' ? c.done : !c.done));
+                // Filter chapters
+                let filtered = chapters.map((ch, i) => ({
+                    ch, i,
+                    done: userData.progress[`${id}_${i}`],
+                    starred: userData.bookmarks[`${id}_${i}`]
+                }));
 
-                if (currentFilter !== 'all' && filteredChapters.length === 0) return;
+                if (currentFilter === 'completed') filtered = filtered.filter(c => c.done);
+                else if (currentFilter === 'pending') filtered = filtered.filter(c => !c.done);
+                else if (currentFilter === 'bookmarked') filtered = filtered.filter(c => c.starred);
+
+                filtered.forEach(c => { if (c.starred) bookmarked++; });
+
+                if (currentFilter !== 'all' && filtered.length === 0) return;
+
+                const isOpen = openSubjects[id] !== false;
 
                 const html = `
-                    <div class="subject-card rounded-2xl overflow-hidden animate-slide-up" style="animation-delay: ${idx * 0.05}s">
-                        <button onclick="toggleAccordion('${id}')" class="w-full p-5 flex items-center justify-between hover:bg-white/5 transition-all">
+                    <div class="subject-card" data-subject="${id}">
+                        <div class="subject-header" onclick="toggleSubject('${id}')">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${subject.color} flex items-center justify-center text-2xl">
+                                <div class="subject-icon" style="background: ${subject.color}20; color: ${subject.color}">
                                     ${subject.icon}
                                 </div>
-                                <div class="text-left">
-                                    <h3 class="font-bold text-lg">${subject.name}</h3>
+                                <div>
+                                    <h3 class="font-bold">${subject.name}</h3>
                                     <p class="text-sm text-gray-400">${done}/${chapters.length} chapters • ${pct}%</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-4">
-                                <div class="w-32 h-2 bg-white/10 rounded-full overflow-hidden hidden md:block">
-                                    <div class="h-full bg-gradient-to-r ${subject.color} transition-all" style="width: ${pct}%"></div>
+                                <div class="w-24 hidden sm:block">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${pct}%; background: ${subject.color}"></div>
+                                    </div>
                                 </div>
-                                <svg id="arrow_${id}" class="w-5 h-5 transition-transform text-gray-400 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="arrow w-5 h-5 text-gray-400 ${isOpen ? 'open' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                 </svg>
                             </div>
-                        </button>
-                        <div id="acc_${id}" class="accordion-content open">
-                            <div class="accordion-inner">
-                                <div class="p-4 pt-0 space-y-2 max-h-96 overflow-y-auto">
-                                    ${filteredChapters.map(({ ch, i, done }) => `
-                                        <label class="chapter-row flex items-center gap-3 p-3 rounded-xl cursor-pointer ${done ? 'completed' : ''}">
-                                            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleChapter('${id}', ${i})" class="custom-checkbox">
-                                            <span class="flex-1 ${done ? 'line-through text-gray-500' : ''}">${ch}</span>
-                                            ${done ? '<span class="text-green-400">✓</span>' : ''}
-                                        </label>
-                                    `).join('')}
+                        </div>
+                        <div class="subject-content ${isOpen ? 'open' : ''}" id="content_${id}">
+                            ${filtered.map(({ ch, i, done, starred }) => `
+                                <div class="chapter-item ${done ? 'completed' : ''}" data-chapter="${id}_${i}">
+                                    <div class="checkbox ${done ? 'checked' : ''}" onclick="toggleChapter('${id}', ${i}, event)">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                    </div>
+                                    <span class="chapter-name flex-1">${ch}</span>
+                                    <span class="bookmark ${starred ? 'active' : ''}" onclick="toggleBookmark('${id}', ${i}, event)">
+                                        ${starred ? '⭐' : '☆'}
+                                    </span>
                                 </div>
-                            </div>
+                            `).join('')}
                         </div>
                     </div>
                 `;
                 container.innerHTML += html;
             });
 
-            updateProgress(completed, total);
+            document.getElementById('overallProgress').textContent = total > 0 ? Math.round((completed / total) * 100) + '%' : '0%';
+            document.getElementById('chaptersCompleted').textContent = completed;
+            document.getElementById('chaptersBookmarked').textContent = bookmarked;
+            document.getElementById('totalChapters').textContent = total;
         }
 
-        function getSubjectsForUser() {
-            const subjects = [];
-            // Add common subjects
-            if (syllabusData.common) {
-                Object.entries(syllabusData.common).forEach(([n, d]) => subjects.push({ name: n, ...d }));
-            }
-            // Add stream-specific subjects
-            if (userData.stream && syllabusData[userData.stream]) {
-                Object.entries(syllabusData[userData.stream]).forEach(([n, d]) => subjects.push({ name: n, ...d }));
-            }
-            // Add optional subject
-            if (userData.optional && syllabusData.optional && syllabusData.optional[userData.optional]) {
-                Object.entries(syllabusData.optional[userData.optional]).forEach(([n, d]) => subjects.push({ name: n, ...d }));
-            }
-            console.log('Subjects loaded:', subjects.length, subjects.map(s => s.name));
-            return subjects;
+        function toggleSubject(id) {
+            openSubjects[id] = !openSubjects[id];
+            const content = document.getElementById('content_' + id);
+            const arrow = document.querySelector(`[data-subject="${id}"] .arrow`);
+            content.classList.toggle('open');
+            arrow.classList.toggle('open');
         }
 
-        function toggleAccordion(id) {
-            const acc = document.getElementById(`acc_${id}`);
-            const arrow = document.getElementById(`arrow_${id}`);
-            const isOpen = acc.classList.contains('open');
-            acc.classList.toggle('open');
-            if (isOpen) {
-                arrow.classList.remove('rotate-180');
-            } else {
-                arrow.classList.add('rotate-180');
-            }
-        }
-
-        async function toggleChapter(subjectId, index) {
+        async function toggleChapter(subjectId, index, event) {
+            event.stopPropagation();
             const key = `${subjectId}_${index}`;
             userData.progress[key] = !userData.progress[key];
             await saveUserData();
@@ -1485,54 +1176,52 @@
             renderMilestones();
         }
 
-        function updateProgress(completed, total) {
-            const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-            document.getElementById('overallProgress').textContent = pct + '%';
-            document.getElementById('chaptersCompleted').textContent = `${completed}/${total}`;
-            document.getElementById('progressRing').setAttribute('stroke-dasharray', `${pct} 100`);
-            document.getElementById('chaptersBar').style.width = pct + '%';
+        async function toggleBookmark(subjectId, index, event) {
+            event.stopPropagation();
+            const key = `${subjectId}_${index}`;
+            userData.bookmarks[key] = !userData.bookmarks[key];
+            await saveUserData();
+            renderSyllabus();
         }
 
-        function filterChapters(filter) {
-            currentFilter = filter;
+        function setFilter(f) {
+            currentFilter = f;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            document.querySelector(`[data-filter="${f}"]`).classList.add('active');
             renderSyllabus();
         }
 
         function searchChapters() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.chapter-row').forEach(row => {
-                const text = row.querySelector('span').textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.chapter-item').forEach(item => {
+                const text = item.querySelector('.chapter-name').textContent.toLowerCase();
+                item.style.display = text.includes(q) ? '' : 'none';
             });
         }
 
         // Milestones
         function renderMilestones() {
-            const subjects = getSubjectsForUser();
+            const subjects = getSubjects();
             let total = 0, completed = 0;
             subjects.forEach(s => {
+                const id = s.name.replace(/[^a-zA-Z0-9]/g, '_');
                 s.chapters.forEach((_, i) => {
                     total++;
-                    if (userData.progress[`${s.name.replace(/\s+/g, '_').replace(/[()]/g, '')}_${i}`]) completed++;
+                    if (userData.progress[`${id}_${i}`]) completed++;
                 });
             });
 
             const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
             const milestones = [
-                { pct: 25, label: '25% Done', icon: '🌟' },
-                { pct: 50, label: 'Halfway!', icon: '🔥' },
-                { pct: 75, label: '75% Done', icon: '💪' },
-                { pct: 100, label: 'Complete!', icon: '🏆' }
+                { p: 25, l: '25%', i: '🌟' },
+                { p: 50, l: '50%', i: '🔥' },
+                { p: 75, l: '75%', i: '💪' },
+                { p: 100, l: '100%', i: '🏆' }
             ];
 
-            const container = document.getElementById('milestonesContainer');
-            const section = document.getElementById('milestonesSection');
-            section.classList.remove('hidden');
-            container.innerHTML = milestones.map(m => `
-                <div class="px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 ${pct >= m.pct ? 'milestone-badge text-gray-900' : 'bg-white/5 text-gray-500 border border-white/10'}">
-                    <span>${m.icon}</span> ${m.label}
+            document.getElementById('milestonesContainer').innerHTML = milestones.map(m => `
+                <div class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 ${pct >= m.p ? 'bg-yellow-500/20 text-yellow-400' : 'bg-white/5 text-gray-500'}">
+                    ${m.i} ${m.l}
                 </div>
             `).join('');
         }
@@ -1545,60 +1234,45 @@
 
         function updateTimer() {
             if (!userData.examDate) return;
-            const exam = new Date(userData.examDate);
-            const now = new Date();
-            const diff = exam - now;
-
+            const diff = new Date(userData.examDate) - new Date();
             if (diff <= 0) {
                 ['Days', 'Hours', 'Minutes', 'Seconds'].forEach(u => document.getElementById('timer' + u).textContent = '00');
-                document.getElementById('examDateDisplay').textContent = '🎉 Exam time! Good luck!';
+                document.getElementById('examDateDisplay').textContent = '🎉 Exam time!';
                 return;
             }
-
             const d = Math.floor(diff / 86400000);
             const h = Math.floor((diff % 86400000) / 3600000);
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
-
             document.getElementById('timerDays').textContent = String(d).padStart(2, '0');
             document.getElementById('timerHours').textContent = String(h).padStart(2, '0');
             document.getElementById('timerMinutes').textContent = String(m).padStart(2, '0');
             document.getElementById('timerSeconds').textContent = String(s).padStart(2, '0');
-            document.getElementById('examDateDisplay').textContent = '📅 ' + exam.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('examDateDisplay').textContent = '📅 ' + new Date(userData.examDate).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
 
         // Settings
         function openSettings() {
-            document.getElementById('settingsModal').classList.remove('hidden');
+            document.getElementById('settingsBackdrop').classList.add('open');
+            document.getElementById('settingsModal').classList.add('open');
             document.getElementById('newExamDate').value = userData.examDate || '';
-            updateSettingsUI();
         }
 
         function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
-
-        function updateSettingsUI() {
-            const { theme, color } = userData.settings || { theme: 'dark', color: 'indigo' };
-            document.getElementById('darkModeBtn').classList.toggle('border-indigo-500', theme === 'dark');
-            document.getElementById('lightModeBtn').classList.toggle('border-yellow-500', theme === 'light');
-            document.querySelectorAll('.color-btn').forEach(b => b.classList.toggle('active', b.dataset.color === color));
+            document.getElementById('settingsBackdrop').classList.remove('open');
+            document.getElementById('settingsModal').classList.remove('open');
         }
 
         function setThemeMode(mode) {
-            userData.settings = userData.settings || {};
             userData.settings.theme = mode;
             applySettings(userData.settings);
             saveSettings();
-            updateSettingsUI();
         }
 
         function setThemeColor(color) {
-            userData.settings = userData.settings || {};
             userData.settings.color = color;
             applySettings(userData.settings);
             saveSettings();
-            updateSettingsUI();
         }
 
         function applySettings(s) {
@@ -1625,6 +1299,7 @@
         async function resetProgress() {
             if (confirm('Reset all progress?')) {
                 userData.progress = {};
+                userData.bookmarks = {};
                 await saveUserData();
                 renderDashboard();
                 closeSettings();
@@ -1632,35 +1307,30 @@
         }
 
         async function resetAll() {
-            if (confirm('Reset EVERYTHING?')) {
-                userData = { ...userData, stream: '', optional: '', examDate: '', progress: {} };
+            if (confirm('Reset everything?')) {
+                userData = { stream: '', optional: '', examDate: '', progress: {}, bookmarks: {}, settings: { theme: 'dark', color: 'indigo' } };
                 await saveUserData();
                 closeSettings();
-                document.getElementById('setupUserName').textContent = userData.name.split(' ')[0];
+                document.getElementById('setupUserName').textContent = currentUser.displayName?.split(' ')[0] || 'Student';
                 showPage('setupPage');
-                ['step2', 'step3'].forEach(s => document.getElementById(s).classList.add('hidden'));
+                document.getElementById('step2').classList.add('hidden');
+                document.getElementById('step3').classList.add('hidden');
                 document.getElementById('step1').classList.remove('hidden');
-                document.getElementById('stepLine1').style.width = '0%';
-                document.getElementById('stepLine2').style.width = '0%';
-                ['stepDot2', 'stepDot3'].forEach(d => {
-                    document.getElementById(d).classList.remove('bg-indigo-500');
-                    document.getElementById(d).classList.add('bg-white/20');
-                });
             }
         }
 
         // Confetti
         function createConfetti() {
-            const colors = ['#6366f1', '#a855f7', '#ec4899', '#22c55e', '#f59e0b', '#ef4444'];
-            for (let i = 0; i < 50; i++) {
+            const colors = ['#6366f1', '#a855f7', '#ec4899', '#22c55e', '#f59e0b'];
+            for (let i = 0; i < 30; i++) {
                 const c = document.createElement('div');
                 c.className = 'confetti';
                 c.style.left = Math.random() * 100 + 'vw';
+                c.style.top = '-10px';
                 c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 c.style.width = c.style.height = (Math.random() * 8 + 4) + 'px';
                 c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
                 c.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                c.style.animationDelay = Math.random() * 0.5 + 's';
                 document.body.appendChild(c);
                 setTimeout(() => c.remove(), 4000);
             }
