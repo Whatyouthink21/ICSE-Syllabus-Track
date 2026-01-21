@@ -1008,9 +1008,12 @@
             if (userData.settings) applySettings(userData.settings);
         }
 
-        async function saveUserData() {
-            try { await db.collection('users').doc(currentUser.uid).set(userData, { merge: true }); } catch (e) {}
+        function saveUserData() {
+            // Save to localStorage immediately (fast)
             localStorage.setItem('icse_user_' + currentUser.uid, JSON.stringify(userData));
+            
+            // Save to Firebase in background (slow, but non-blocking)
+            db.collection('users').doc(currentUser.uid).set(userData, { merge: true }).catch(() => {});
         }
 
         // Pages
@@ -1166,22 +1169,67 @@
             arrow.classList.toggle('open');
         }
 
-        async function toggleChapter(subjectId, index, event) {
+        function toggleChapter(subjectId, index, event) {
             event.stopPropagation();
             const key = `${subjectId}_${index}`;
-            userData.progress[key] = !userData.progress[key];
-            await saveUserData();
-            if (userData.progress[key]) createConfetti();
-            renderSyllabus();
+            const isCompleting = !userData.progress[key];
+            userData.progress[key] = isCompleting;
+            
+            // Instant UI update
+            const item = document.querySelector(`[data-chapter="${key}"]`);
+            const checkbox = item?.querySelector('.checkbox');
+            if (item && checkbox) {
+                item.classList.toggle('completed', isCompleting);
+                checkbox.classList.toggle('checked', isCompleting);
+                if (isCompleting) createConfetti();
+            }
+            
+            // Update stats instantly
+            updateStats();
             renderMilestones();
+            
+            // Save in background (non-blocking)
+            saveUserData();
         }
 
-        async function toggleBookmark(subjectId, index, event) {
+        function toggleBookmark(subjectId, index, event) {
             event.stopPropagation();
             const key = `${subjectId}_${index}`;
-            userData.bookmarks[key] = !userData.bookmarks[key];
-            await saveUserData();
-            renderSyllabus();
+            const isBookmarking = !userData.bookmarks[key];
+            userData.bookmarks[key] = isBookmarking;
+            
+            // Instant UI update
+            const item = document.querySelector(`[data-chapter="${key}"]`);
+            const bookmark = item?.querySelector('.bookmark');
+            if (bookmark) {
+                bookmark.classList.toggle('active', isBookmarking);
+                bookmark.innerHTML = isBookmarking ? '⭐' : '☆';
+            }
+            
+            // Update stats
+            updateStats();
+            
+            // Save in background (non-blocking)
+            saveUserData();
+        }
+        
+        function updateStats() {
+            const subjects = getSubjects();
+            let total = 0, completed = 0, bookmarked = 0;
+            
+            subjects.forEach(s => {
+                const id = s.name.replace(/[^a-zA-Z0-9]/g, '_');
+                s.chapters.forEach((_, i) => {
+                    total++;
+                    if (userData.progress[`${id}_${i}`]) completed++;
+                    if (userData.bookmarks[`${id}_${i}`]) bookmarked++;
+                });
+            });
+            
+            document.getElementById('overallProgress').textContent = total > 0 ? Math.round((completed / total) * 100) + '%' : '0%';
+            document.getElementById('chaptersCompleted').textContent = completed;
+            document.getElementById('chaptersBookmarked').textContent = bookmarked;
+            document.getElementById('totalChapters').textContent = total;
         }
 
         function setFilter(f) {
